@@ -1,0 +1,143 @@
+\documentclass[12pt, a4paper]{report}
+
+\usepackage{fyp}
+
+%%these packages are not really necessary if you dont need the code and proofs environments
+%%so if you like you can delete from here till the next comment
+%%note that there are some examples below which obviously won't work once you remove this part
+\usepackage{verbatim}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+%%this environment is useful if you have code snippets
+\newenvironment{code}
+{\footnotesize\verbatim}{\endverbatim\normalfont}
+
+%%the following environments are useful to present proofs in your thesis
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}%plain}
+\newtheorem{example}{Example}[section]
+\theoremstyle{definition}%remark}
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{definition}%remark}
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{definition}%remark}
+\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{definition}%remark}
+\newtheorem{theorem}{Theorem}[section]
+%%you can delete till here if you dont need the code and proofs environments
+
+
+
+\setlength{\headheight}{15pt}
+%\overfullrule=15pt
+
+
+\begin{document}
+
+
+
+%%make sure to enter this information
+\title{a title}
+\author{name surname}
+\date{enter a date}
+\supervisor{supervisor}
+\department{Faculty of ICT}
+\universitycrestpath{img/crest}
+\submitdate{enter a date}
+
+\frontmatter
+
+
+\begin{acknowledgements}
+    your acknowledgments
+\end{acknowledgements}
+
+\begin{abstract}
+    an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract an abstract
+\end{abstract}
+
+\tableofcontents
+
+\listoffigures
+
+\listoftables
+
+
+
+\mainmatter
+
+% \chapter{Introduction}
+% Lorem ipsum dolor sit amet, id mel movet dicit accusamus, eam te assum liber. Te ferri habemus his. Eum te cibo noster, et illud etiam est, mei detraxit democritum in. Ei ius audiam sanctus. Eu has nobis cetero, ea est modus mazim, at eam magna tantas delenit. Ad mucius fabulas percipit quo.
+
+% Sea nostrum scribentur ex, in eam reque incorrupte, te quis audiam antiopam mei. Id audiam option oportere eum, esse brute ut eos. Sea ubique legere cu, eum ne quas decore expetendis. Aeque fierent mnesarchum cum te, vix verterem iudicabit ea.
+\include{sections/preface.tex}
+
+
+\section{Section name}
+
+Duo commodo copiosae ne, nec ei novum meliore constituto, cu mea duis tamquam. Docendi elaboraret in has, hinc principes ex sit. Option inermis elaboraret an sea. Ne sed dicunt salutandi deterruisset, eum alia quas voluptatibus ei.
+
+No vim tempor mediocritatem necessitatibus. Mea doming maluisset eu, no pro omnes meliore, ne pri odio purto recusabo. Te duo solet facete feugiat, nullam virtute intellegat vix ea. Exerci posidonium in usu. Meis omittam aliquando cum ea, ius feugait detraxit deseruisse eu. At mel viderer virtute contentiones, et eos omnis senserit euripidis.
+
+
+%%you can organise your chapters into parts but this is not always necessary
+%%\part{Part1} - Available but generally not used
+% \chapter{Chapter name}
+
+% Sea no ullum euripidis scriptorem, ne aperiam voluptaria qui, quo eros lobortis quaerendum in. No velit recteque cum. Posse semper complectitur vel et, has intellegat instructior ei. Decore doming quo in, an eum duis patrioque. Eu nam choro vituperata, et qui quas porro epicurei. Pro an aliquando intellegat inciderint, quo munere civibus an.
+\include{sections/chap01}
+\include{sections/chap02}
+
+% \section{Section name}
+
+% Section content
+
+% \section{Section name}
+
+% Section content
+
+% \begin{definition}
+%     This is an example of a definition
+% \end{definition}
+
+% \begin{example}
+%     This is an example of an example :)
+% \end{example}
+
+
+% \chapter{Chapter Name}
+
+% \section{Section Name}
+
+% \begin{proof}
+%     this is a proof
+% \end{proof}
+
+
+% \chapter{Conclusion}
+\include{sections/conclusion}
+
+
+\appendix
+
+\chapter{This chapter is in the appendix}
+\section{These are some details}
+%%example of the code environment
+\begin{code}
+    this is some code;
+    Make sure to use this template.
+\end{code}
+
+
+\bibliomatter
+
+
+
+\bibliographystyle{abbrv}
+\bibliography{references}
+
+\end{document}
