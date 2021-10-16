@@ -16,4 +16,7 @@ pdf/*.pdf
 cuni/sections
 cuni/bibliography.bib
 malta/sections
-malta/bibliography.bib
+malta/bibliography.bibdataset/mono
+**/dataset/moses
+**/dataset/mono
+**/dataset/tmp
