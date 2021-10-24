@@ -20,3 +20,5 @@ malta/bibliography.bibdataset/mono
 **/dataset/moses
 **/dataset/mono
 **/dataset/tmp
+**/dataset/iwslt14
+**/wandb
