@@ -2,3 +2,4 @@ adapter-transformers==2.2.0
 sacrebleu==2.0.0
 datasets==1.13.3
 tokenizers==0.10.3
+wandb

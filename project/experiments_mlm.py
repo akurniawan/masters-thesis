@@ -30,6 +30,7 @@ from typing import Optional
 import datasets
 import transformers
 from datasets import load_dataset
+from datasets.load import load_from_disk
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -136,6 +137,10 @@ class DataTrainingArguments:
         default=None,
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
     )
+    dataset_disk_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "The name of the dataset to use (via load_from_disk function)."},
+    )
     dataset_config_name: Optional[str] = field(
         default=None,
         metadata={
@@ -202,7 +207,12 @@ class DataTrainingArguments:
     )
 
     def __post_init__(self):
-        if self.dataset_name is None and self.train_file is None and self.validation_file is None:
+        if (
+            self.dataset_name is None
+            and self.train_file is None
+            and self.validation_file is None
+            and self.dataset_disk_path is None
+        ):
             raise ValueError("Need either a dataset name or a training/validation file.")
         else:
             if self.train_file is not None:
@@ -311,6 +321,8 @@ def main():
                 split=f"train[{data_args.validation_split_percentage}%:]",
                 cache_dir=model_args.cache_dir,
             )
+    elif data_args.dataset_disk_path is not None:
+        raw_datasets = load_from_disk(data_args.dataset_disk_path)
     else:
         data_files = {}
         if data_args.train_file is not None:

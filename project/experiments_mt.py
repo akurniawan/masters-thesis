@@ -16,9 +16,8 @@
 """
 Fine-tuning the library models for sequence to sequence.
 """
-# You can also adapt this script on your own sequence to sequence task. Pointers for this are left as comments.
-
 import logging
+import math
 import os
 import sys
 from dataclasses import dataclass, field
@@ -26,48 +25,37 @@ from typing import Optional
 
 import datasets
 import numpy as np
+import torch
+import torch.optim as opt
 import transformers
-from datasets import load_dataset, load_metric
-from torch.utils.data import DataLoader
-from transformers import (
-    AutoConfig,
-    AutoModelForSeq2SeqLM,
-    AutoTokenizer,
-    DataCollatorForSeq2Seq,
-    EncoderDecoderConfig,
-    EncoderDecoderModel,
-    HfArgumentParser,
-    M2M100Tokenizer,
-    MBart50Tokenizer,
-    MBart50TokenizerFast,
-    MBartTokenizer,
-    MBartTokenizerFast,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    default_data_collator,
-    set_seed,
-)
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version
+from datasets import load_dataset, load_from_disk, load_metric
+from transformers import (AutoConfig, AutoTokenizer, DataCollatorForSeq2Seq,
+                          EncoderDecoderConfig, EncoderDecoderModel,
+                          HfArgumentParser, M2M100Tokenizer, MBart50Tokenizer,
+                          MBart50TokenizerFast, MBartTokenizer,
+                          MBartTokenizerFast, PfeifferConfig, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments, default_data_collator,
+                          set_seed)
+from transformers.optimization import get_scheduler
+from transformers.trainer_utils import SchedulerType, get_last_checkpoint
 from transformers.utils.versions import require_version
-
-# Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-# check_min_version("4.12.0.dev0")
-
-require_version(
-    "datasets>=1.8.0", "To fix: pip install -r examples/pytorch/translation/requirements.txt"
-)
 
 logger = logging.getLogger(__name__)
 
-# A list of all multilingual tokenizer which require src_lang and tgt_lang attributes.
-MULTILINGUAL_TOKENIZERS = [
-    MBartTokenizer,
-    MBartTokenizerFast,
-    MBart50Tokenizer,
-    MBart50TokenizerFast,
-    M2M100Tokenizer,
-]
+
+class CustomSeq2SeqTrainer(Seq2SeqTrainer):
+    def create_optimizer_and_scheduler(self, num_training_steps):
+        if self.optimizer is None:
+            optimizer_cls = opt.Adam
+            optimizer_kwargs = {
+                "betas": (self.args.adam_beta1, self.args.adam_beta2),
+                "eps": self.args.adam_epsilon,
+            }
+            optimizer_kwargs["lr"] = self.args.learning_rate
+            self.optimizer = optimizer_cls(self.model.parameters(), **optimizer_kwargs)
+
+        self.lr_scheduler = super().create_scheduler(num_training_steps, self.optimizer)
+        print(self.optimizer, self.lr_scheduler, num_training_steps)
 
 
 @dataclass
@@ -77,11 +65,13 @@ class ModelArguments:
     """
 
     enc_config_name: Optional[str] = field(
+        default=None,
         metadata={
             "help": "Pretrained config name or path for encoder if not the same as model_name"
         },
     )
     dec_config_name: Optional[str] = field(
+        default=None,
         metadata={
             "help": "Pretrained config name or path for decoder if not the same as model_name"
         },
@@ -97,6 +87,9 @@ class ModelArguments:
         metadata={
             "help": "Path to pretrained model or model identifier from huggingface.co/models"
         },
+    )
+    seq2seq_model_path: str = field(
+        default=None, metadata={"help": "Path to trained model"},
     )
     enc_adapters_name: str = field(
         default=None, metadata={"help": "Name to instantiate adapters for encoder"},
@@ -141,6 +134,10 @@ class DataTrainingArguments:
     dataset_name: Optional[str] = field(
         default=None,
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
+    )
+    dataset_disk_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "The name of the dataset to use (via load_from_disk function)."},
     )
     dataset_loader_script: Optional[str] = field(
         default=None, metadata={"help": "The name of the script used to load the dataset."},
@@ -256,9 +253,14 @@ class DataTrainingArguments:
     )
 
     def __post_init__(self):
-        if self.dataset_name is None and self.train_file is None and self.validation_file is None:
-            if self.dataset_loader_script is None:
-                raise ValueError("Need either a dataset name or a training/validation file.")
+        if (
+            self.dataset_name is None
+            and self.train_file is None
+            and self.validation_file is None
+            and self.dataset_disk_path is None
+            and self.dataset_loader_script is None
+        ):
+            raise ValueError("Need either a dataset name or a training/validation file.")
         elif self.source_lang is None or self.target_lang is None:
             raise ValueError("Need to specify the source language and the target language.")
 
@@ -308,18 +310,6 @@ def main():
     )
     logger.info(f"Training/evaluation parameters {training_args}")
 
-    if data_args.source_prefix is None and model_args.model_name_or_path in [
-        "t5-small",
-        "t5-base",
-        "t5-large",
-        "t5-3b",
-        "t5-11b",
-    ]:
-        logger.warning(
-            "You're running a t5 model but didn't provide a source prefix, which is expected, e.g. with "
-            "`--source_prefix 'translate English to German: ' `"
-        )
-
     # Detecting last checkpoint.
     last_checkpoint = None
     if (
@@ -356,6 +346,8 @@ def main():
         raw_datasets = load_dataset(
             data_args.dataset_name, data_args.dataset_config_name, cache_dir=model_args.cache_dir
         )
+    elif data_args.dataset_disk_path is not None:
+        raw_datasets = load_from_disk(data_args.dataset_disk_path)
     elif data_args.dataset_loader_script is not None:
         raw_datasets = load_dataset(
             data_args.dataset_loader_script,
@@ -385,8 +377,11 @@ def main():
     # The .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
     if model_args.enc_model_name_or_path and model_args.dec_model_name_or_path:
+        logger.info(
+            f"Loading pretraining {model_args.enc_model_name_or_path} and {model_args.dec_model_name_or_path}"
+        )
         model = EncoderDecoderModel.from_encoder_decoder_pretrained(
-            model_args.enc_model_name_or_path, model_args.enc_model_name_or_path
+            model_args.enc_model_name_or_path, model_args.dec_model_name_or_path
         )
     else:
         encoder_config = AutoConfig.from_pretrained(
@@ -414,33 +409,44 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
     )
     dec_tokenizer = AutoTokenizer.from_pretrained(
-        model_args.enc_config_name,
+        model_args.dec_config_name,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
         use_fast=model_args.use_fast_tokenizer,
         use_auth_token=True if model_args.use_auth_token else None,
     )
+
     ##################################################
     # Activating adaptesr
     ##################################################
     if model_args.enc_adapters_name or model_args.dec_adapters_name:
+        adapter_config = PfeifferConfig()
         if model_args.enc_adapters_name and model_args.dec_adapters_name:
             # Add adapters in both encoder and decoder
             model_args.dec_adapters_name = model_args.enc_adapters_name
-            model.add_adapter(model_args.enc_adapters_name)
+            model.add_adapter(model_args.enc_adapters_name, config=adapter_config)
+            # Activate adapters
+            model.train_adapter(model_args.enc_adapters_name)
         elif not model_args.enc_adapters_name and model_args.dec_adapters_name:
             # Only add adapters in decoder
-            model.decoder.add_adapter(model_args.enc_adapters_name)
-        elif model_args.enc_adaptesr_name and not model_args.dec_adapters_name:
+            model.decoder.add_adapter(model_args.dec_adapters_name, config=adapter_config)
+            model.decoder.train_adapter(model_args.dec_adapters_name)
+            model.encoder.freeze_model(True)
+        elif model_args.enc_adapters_name and not model_args.dec_adapters_name:
             # Only add adapters in encoder
-            model.encoder.add_adapter(model_args.dec_adapters_name)
-        # Activate adapters
-        model.train_adapters(model_args.enc_adapters_name)
-        # Since weights other than the adapters will be freezed, we need to reactivate the
+            model.encoder.add_adapter(model_args.enc_adapters_name, config=adapter_config)
+            model.encoder.train_adapter(model_args.enc_adapters_name)
+            model.decoder.freeze_model(True)
+        # Since weights other than the adapters will be frozen, we need to reactivate the
         # cross attention layer
         for k, v in model.named_parameters():
             if "crossattention" in k:
                 v.requires_grad = True
+    if model_args.seq2seq_model_path:
+        logger.info(f"Restoring model from {model_args.seq2seq_model_path}")
+        model.load_state_dict(torch.load(model_args.seq2seq_model_path + "/pytorch_model.bin"))
+        model.set_active_adapters(model_args.enc_adapters_name)
+
     model.config.decoder_start_token_id = dec_tokenizer.cls_token_id
 
     if model.config.decoder_start_token_id is None:
@@ -629,7 +635,7 @@ def main():
         return result
 
     # Initialize our Trainer
-    trainer = Seq2SeqTrainer(
+    trainer = CustomSeq2SeqTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset if training_args.do_train else None,
@@ -663,11 +669,6 @@ def main():
 
     # Evaluation
     results = {}
-    max_length = (
-        training_args.generation_max_length
-        if training_args.generation_max_length is not None
-        else data_args.val_max_target_length
-    )
     num_beams = (
         data_args.num_beams
         if data_args.num_beams is not None
@@ -676,9 +677,7 @@ def main():
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
 
-        metrics = trainer.evaluate(
-            max_length=max_length, num_beams=num_beams, metric_key_prefix="eval"
-        )
+        metrics = trainer.evaluate(num_beams=num_beams, metric_key_prefix="eval")
         max_eval_samples = (
             data_args.max_eval_samples
             if data_args.max_eval_samples is not None
@@ -693,7 +692,7 @@ def main():
         logger.info("*** Predict ***")
 
         predict_results = trainer.predict(
-            predict_dataset, metric_key_prefix="predict", max_length=max_length, num_beams=num_beams
+            predict_dataset, metric_key_prefix="predict", num_beams=num_beams
         )
         metrics = predict_results.metrics
         max_predict_samples = (
@@ -720,23 +719,23 @@ def main():
                 with open(output_prediction_file, "w", encoding="utf-8") as writer:
                     writer.write("\n".join(predictions))
 
-    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "translation"}
-    if data_args.dataset_name is not None:
-        kwargs["dataset_tags"] = data_args.dataset_name
-        if data_args.dataset_config_name is not None:
-            kwargs["dataset_args"] = data_args.dataset_config_name
-            kwargs["dataset"] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
-        else:
-            kwargs["dataset"] = data_args.dataset_name
+    # kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "translation"}
+    # if data_args.dataset_name is not None:
+    #     kwargs["dataset_tags"] = data_args.dataset_name
+    #     if data_args.dataset_config_name is not None:
+    #         kwargs["dataset_args"] = data_args.dataset_config_name
+    #         kwargs["dataset"] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
+    #     else:
+    #         kwargs["dataset"] = data_args.dataset_name
 
-    languages = [l for l in [data_args.source_lang, data_args.target_lang] if l is not None]
-    if len(languages) > 0:
-        kwargs["language"] = languages
+    # languages = [l for l in [data_args.source_lang, data_args.target_lang] if l is not None]
+    # if len(languages) > 0:
+    #     kwargs["language"] = languages
 
-    if training_args.push_to_hub:
-        trainer.push_to_hub(**kwargs)
-    else:
-        trainer.create_model_card(**kwargs)
+    # if training_args.push_to_hub:
+    #     trainer.push_to_hub(**kwargs)
+    # else:
+    #     trainer.create_model_card(**kwargs)
 
     return results
 
