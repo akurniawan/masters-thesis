@@ -21,4 +21,6 @@ malta/bibliography.bibdataset/mono
 **/dataset/mono
 **/dataset/tmp
 **/dataset/iwslt14
+**/dataset/sample
 **/wandb
+**/outputs/*

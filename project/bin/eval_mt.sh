@@ -9,49 +9,62 @@
 
 PYTHON=/storage/brno3-cerit/home/akurniawan/conda_env/bin/python
 WORKDIR=/storage/plzen1/home/akurniawan/adapters-project
+MODELDIR=/storage/brno3-cerit/home/akurniawan/adapters-project
 # MODELDIR=$WORKDIR/outputs/adapters_de_en
 # MODELDIR=$WORKDIR/outputs/baseline_normal
 # MODELDIR=$WORKDIR/outputs/adapters_de_en_pt
-MODELDIR=$WORKDIR/outputs/baseline_normal_500000.bak
+# MODELDIR=$WORKDIR/outputs/baseline_normal_500000.bak
 # MODELDIR=$WORKDIR/outputs/baseline_normal_500000
+# MODELDIR=$MODELDIR/outputs/baseline_normal_2000000
+# MODELDIR=$MODELDIR/outputs/baseline_normal_2000000
+# MODELDIR=$MODELDIR/outputs/adapters_de_en_pt_500000
+# MODELDIR=$MODELDIR/outputs/adapters_de_en_pt_2000000
+# MODELDIR=$MODELDIR/outputs/adapters_de_en_bert
+MODELDIR=$MODELDIR/outputs/random_adapter
 WANDB_API_KEY=45ca700bd4648136b44820bfc7dfde28e203d204
 WANDB_PROJECT=iwslt_mt_adapters
 
 # CHECKPOINTDIR=$MODELDIR/checkpoint-200000
 # CHECKPOINTDIR=$MODELDIR/checkpoint-120000
 # CHECKPOINTDIR=$MODELDIR/checkpoint-234000
-CHECKPOINTDIR=$MODELDIR/checkpoint-214000
+# CHECKPOINTDIR=$MODELDIR/checkpoint-214000
+# CHECKPOINTDIR=$MODELDIR/checkpoint-556000
+# CHECKPOINTDIR=$MODELDIR/checkpoint-506000
+# CHECKPOINTDIR=$MODELDIR/checkpoint-590000
+# CHECKPOINTDIR=$MODELDIR/checkpoint-394000
 # CHECKPOINTDIR=$MODELDIR/checkpoint-200000
-CUDA_VISIBLE_DEVICES=1 $PYTHON $WORKDIR/experiments_mt.py \
-    --seq2seq_model_path $CHECKPOINTDIR \
-    --enc_config_name bert-base-german-dbmdz-uncased \
-    --dec_config_name bert-base-uncased \
-    --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
-    --dataset_config_name de-en \
-    --source_lang de \
-    --target_lang en \
-    --dataset_dir $WORKDIR/dataset/iwslt14 \
-    --output_dir $MODELDIR \
-    --max_source_length 512 \
-    --preprocessing_num_workers 8 \
-    --pad_to_max_length True \
-    --per_gpu_eval_batch_size 16 \
-    --num_beams 5 --do_eval --do_predict --predict_with_generate
-
-# CUDA_VISIBLE_DEVICES=3 $PYTHON $WORKDIR/experiments_mt.py \
+CHECKPOINTDIR=$MODELDIR/checkpoint-200000
+# CUDA_VISIBLE_DEVICES=2 $PYTHON $WORKDIR/experiments_mt.py \
 #     --seq2seq_model_path $CHECKPOINTDIR \
 #     --enc_config_name bert-base-german-dbmdz-uncased \
 #     --dec_config_name bert-base-uncased \
-#     --enc_adapters_name iwslt_adapters \
-#     --dec_adapters_name iwslt_adapters \
 #     --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
 #     --dataset_config_name de-en \
 #     --source_lang de \
 #     --target_lang en \
 #     --dataset_dir $WORKDIR/dataset/iwslt14 \
-#     --output_dir $WORKDIR/outputs/adapters_models \
+#     --output_dir $MODELDIR \
 #     --max_source_length 512 \
 #     --preprocessing_num_workers 8 \
 #     --pad_to_max_length True \
 #     --per_gpu_eval_batch_size 64 \
-#     --num_beams 5 --do_eval --do_predict --predict_with_generate
+#     --num_beams 5 --do_predict --predict_with_generate
+
+CUDA_VISIBLE_DEVICES=0 $PYTHON $WORKDIR/experiments_mt.py \
+    --seq2seq_model_path $CHECKPOINTDIR \
+    --enc_config_name bert-base-german-dbmdz-uncased \
+    --dec_config_name bert-base-uncased \
+    --enc_adapters_name iwslt_adapters \
+    --dec_adapters_name iwslt_adapters \
+    --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
+    --dataset_config_name de-en \
+    --source_lang de \
+    --target_lang en \
+    --dataset_dir $WORKDIR/dataset/iwslt14 \
+    --output_dir $WORKDIR/outputs/adapters_models \
+    --max_source_length 512 \
+    --max_target_length 512 \
+    --preprocessing_num_workers 8 \
+    --pad_to_max_length True \
+    --per_gpu_eval_batch_size 16 \
+    --num_beams 5 --do_predict --predict_with_generate

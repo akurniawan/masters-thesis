@@ -29,16 +29,20 @@ import torch
 import torch.optim as opt
 import transformers
 from datasets import load_dataset, load_from_disk, load_metric
-from transformers import (AutoConfig, AutoTokenizer, DataCollatorForSeq2Seq,
-                          EncoderDecoderConfig, EncoderDecoderModel,
-                          HfArgumentParser, M2M100Tokenizer, MBart50Tokenizer,
-                          MBart50TokenizerFast, MBartTokenizer,
-                          MBartTokenizerFast, PfeifferConfig, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments, default_data_collator,
-                          set_seed)
-from transformers.optimization import get_scheduler
-from transformers.trainer_utils import SchedulerType, get_last_checkpoint
-from transformers.utils.versions import require_version
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    DataCollatorForSeq2Seq,
+    EncoderDecoderConfig,
+    EncoderDecoderModel,
+    HfArgumentParser,
+    PfeifferConfig,
+    Seq2SeqTrainer,
+    Seq2SeqTrainingArguments,
+    default_data_collator,
+    set_seed,
+)
+from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +94,9 @@ class ModelArguments:
     )
     seq2seq_model_path: str = field(
         default=None, metadata={"help": "Path to trained model"},
+    )
+    pretrained_mt_path: str = field(
+        default=None, metadata={"help": "Path to pre-trained model"},
     )
     enc_adapters_name: str = field(
         default=None, metadata={"help": "Name to instantiate adapters for encoder"},
@@ -401,6 +408,10 @@ def main():
         )
         model = EncoderDecoderModel(config=config)
 
+    if model_args.pretrained_mt_path:
+        logger.info(f"Loading pretrained MT model from {model_args.pretrained_mt_path}")
+        model.load_state_dict(torch.load(model_args.pretrained_mt_path + "/pytorch_model.bin"))
+
     enc_tokenizer = AutoTokenizer.from_pretrained(
         model_args.enc_config_name,
         cache_dir=model_args.cache_dir,
@@ -707,12 +718,20 @@ def main():
 
         if trainer.is_world_process_zero():
             if training_args.predict_with_generate:
+                inputs = enc_tokenizer.batch_decode(
+                    predict_dataset["input_ids"],
+                    skip_special_tokens=True,
+                    clean_up_tokenization_spaces=True,
+                )
                 predictions = dec_tokenizer.batch_decode(
                     predict_results.predictions,
                     skip_special_tokens=True,
                     clean_up_tokenization_spaces=True,
                 )
-                predictions = [pred.strip() for pred in predictions]
+                predictions = [
+                    "input: {}\nprediction:{}\n".format(inp.strip(), pred.strip())
+                    for inp, pred in zip(inputs, predictions)
+                ]
                 output_prediction_file = os.path.join(
                     training_args.output_dir, "generated_predictions.txt"
                 )

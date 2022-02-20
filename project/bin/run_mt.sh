@@ -16,24 +16,19 @@ SAMPLE=500000
 # SAMPLE=2000000
 # SAMPLE=40000000
 
-# --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
-    # --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de/checkpoint-246000 \
-    # --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en/checkpoint-252000 \
-    # --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de_$SAMPLE/checkpoint-252000 \
-    # --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en_$SAMPLE/checkpoint-38000 \
-    # --output_dir $WORKDIR/outputs/adapters_de_en_pt_$SAMPLE \
-TRANSFORMERS_CACHE=$CACHE_FOLDER WANDB_PROJECT=iwslt_adapters_pt_$SAMPLE $PYTHON $WORKDIR/experiments_mt.py \
+TRANSFORMERS_CACHE=$CACHE_FOLDER WANDB_PROJECT=iwslt_adapters_pt $PYTHON $WORKDIR/experiments_mt.py \
     --enc_config_name bert-base-german-dbmdz-uncased \
     --dec_config_name bert-base-uncased \
     --enc_adapters_name iwslt_adapters \
     --dec_adapters_name iwslt_adapters \
-    --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de_$SAMPLE/checkpoint-252000 \
-    --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en_$SAMPLE/checkpoint-38000 \
-    --dataset_disk_path $WORKDIR/dataset/wmt19_sample_$SAMPLE \
+    --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
+    --dataset_dir $WORKDIR/dataset/iwslt14 \
+    --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de/checkpoint-246000 \
+    --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en/checkpoint-252000 \
     --dataset_config_name de-en \
     --source_lang de \
     --target_lang en \
-    --output_dir $MODELDIR/adapters_de_en_pt_$SAMPLE \
+    --output_dir $MODELDIR/adapters_de_en_pt \
     --max_source_length 512 \
     --max_target_length 180 \
     --preprocessing_num_workers 8 \
@@ -52,3 +47,13 @@ TRANSFORMERS_CACHE=$CACHE_FOLDER WANDB_PROJECT=iwslt_adapters_pt_$SAMPLE $PYTHON
     --pad_to_max_length True \
     --do_train --do_eval --do_predict --predict_with_generate \
     --report_to wandb
+
+
+# --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
+# --dataset_dir $WORKDIR/dataset/iwslt14 \
+    # --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de/checkpoint-246000 \
+    # --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en/checkpoint-252000 \
+    # --enc_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_de_$SAMPLE/checkpoint-252000 \
+    # --dec_model_name_or_path /storage/plzen1/home/akurniawan/adapters-project/outputs/iwslt_lm_en_$SAMPLE/checkpoint-38000 \
+    # --dataset_disk_path $WORKDIR/dataset/wmt19_sample_$SAMPLE \
+    # --output_dir $WORKDIR/outputs/adapters_de_en_pt_$SAMPLE \
