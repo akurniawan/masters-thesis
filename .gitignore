@@ -1,5 +1,4 @@
 .DS_Store
-pdf/*.pdf
 *.log 
 *.dvi 
 *.aux 
@@ -13,10 +12,13 @@ pdf/*.pdf
 *.synctex.gz
 *.fls
 *.fdb_latexmk
-cuni/sections
-cuni/bibliography.bib
-malta/sections
-malta/bibliography.bibdataset/mono
+**/cuni/sections
+**/cuni/bibliography.bib
+**/cuni/img
+**/malta/sections
+**/malta/bibliography.bib
+**/malta/img
+**/malta/bibliography.bibdataset/mono
 **/dataset/moses
 **/dataset/mono
 **/dataset/tmp
@@ -24,3 +26,4 @@ malta/bibliography.bibdataset/mono
 **/dataset/sample
 **/wandb
 **/outputs/*
+**/pdf/*.pdf
