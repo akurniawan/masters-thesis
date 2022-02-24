@@ -114,6 +114,26 @@
   pages   = {1740-1751}
 }
 
+@inproceedings{philip2020monolingual,
+  title     = {Monolingual adapters for zero-shot neural machine translation},
+  author    = {Philip, Jerin and Berard, Alexandre and Gall{\'e}, Matthias and Besacier, Laurent},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {4465--4470},
+  year      = {2020}
+}
+
+@inproceedings{conneau2019cross,
+	author = {CONNEAU, Alexis and Lample, Guillaume},
+	booktitle = {Advances in Neural Information Processing Systems},
+	editor = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+	publisher = {Curran Associates, Inc.},
+	title = {Cross-lingual Language Model Pretraining},
+	url = {https://proceedings.neurips.cc/paper/2019/file/c04c19c2c2474dbf5f7ac4372c5b9af1-Paper.pdf},
+	volume = {32},
+	year = {2019},
+	Bdsk-Url-1 = {https://proceedings.neurips.cc/paper/2019/file/c04c19c2c2474dbf5f7ac4372c5b9af1-Paper.pdf}}
+
+
 @article{zhu2020incorporating,
   title   = {Incorporating BERT into Neural Machine Translation},
   author  = {Jinhua Zhu and Yingce Xia and Lijun Wu and Di He and Tao Qin and Wen-gang Zhou and Houqiang Li and Tie-Yan Liu},
@@ -234,6 +254,43 @@
   booktitle = {EMNLP},
   year      = {2017}
 }
+
+@inproceedings{rajpurkar2018know,
+  title     = {Know What You Don{'}t Know: Unanswerable Questions for {SQ}u{AD}},
+  author    = {Rajpurkar, Pranav  and
+               Jia, Robin  and
+               Liang, Percy},
+  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)},
+  month     = jul,
+  year      = {2018},
+  address   = {Melbourne, Australia},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/P18-2124},
+  doi       = {10.18653/v1/P18-2124},
+  pages     = {784--789},
+  abstract  = {Extractive reading comprehension systems can often locate the correct answer to a question in a context document, but they also tend to make unreliable guesses on questions for which the correct answer is not stated in the context. Existing datasets either focus exclusively on answerable questions, or use automatically generated unanswerable questions that are easy to identify. To address these weaknesses, we present SQuADRUn, a new dataset that combines the existing Stanford Question Answering Dataset (SQuAD) with over 50,000 unanswerable questions written adversarially by crowdworkers to look similar to answerable ones. To do well on SQuADRUn, systems must not only answer questions when possible, but also determine when no answer is supported by the paragraph and abstain from answering. SQuADRUn is a challenging natural language understanding task for existing models: a strong neural system that gets 86{\%} F1 on SQuAD achieves only 66{\%} F1 on SQuADRUn. We release SQuADRUn to the community as the successor to SQuAD.}
+}
+
+
+@inproceedings{wang2018glue,
+  title     = {{GLUE}: A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding},
+  author    = {Wang, Alex  and
+               Singh, Amanpreet  and
+               Michael, Julian  and
+               Hill, Felix  and
+               Levy, Omer  and
+               Bowman, Samuel},
+  booktitle = {Proceedings of the 2018 {EMNLP} Workshop {B}lackbox{NLP}: Analyzing and Interpreting Neural Networks for {NLP}},
+  month     = nov,
+  year      = {2018},
+  address   = {Brussels, Belgium},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/W18-5446},
+  doi       = {10.18653/v1/W18-5446},
+  pages     = {353--355},
+  abstract  = {Human ability to understand language is \textit{general, flexible, and robust}. In contrast, most NLU models above the word level are designed for a specific task and struggle with out-of-domain data. If we aspire to develop models with understanding beyond the detection of superficial correspondences between inputs and outputs, then it is critical to develop a unified model that can execute a range of linguistic tasks across different domains. To facilitate research in this direction, we present the General Language Understanding Evaluation (GLUE, gluebenchmark.com): a benchmark of nine diverse NLU tasks, an auxiliary dataset for probing models for understanding of specific linguistic phenomena, and an online platform for evaluating and comparing models. For some benchmark tasks, training data is plentiful, but for others it is limited or does not match the genre of the test set. GLUE thus favors models that can represent linguistic knowledge in a way that facilitates sample-efficient learning and effective knowledge-transfer across tasks. While none of the datasets in GLUE were created from scratch for the benchmark, four of them feature privately-held test data, which is used to ensure that the benchmark is used fairly. We evaluate baselines that use ELMo (Peters et al., 2018), a powerful transfer learning technique, as well as state-of-the-art sentence representation models. The best models still achieve fairly low absolute scores. Analysis with our diagnostic dataset yields similarly weak performance over all phenomena tested, with some exceptions.}
+}
+
 
 @article{Sennrich2016ImprovingNM,
   title   = {Improving Neural Machine Translation Models with Monolingual Data},
