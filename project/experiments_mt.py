@@ -29,19 +29,11 @@ import torch
 import torch.optim as opt
 import transformers
 from datasets import load_dataset, load_from_disk, load_metric
-from transformers import (
-    AutoConfig,
-    AutoTokenizer,
-    DataCollatorForSeq2Seq,
-    EncoderDecoderConfig,
-    EncoderDecoderModel,
-    HfArgumentParser,
-    PfeifferConfig,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    default_data_collator,
-    set_seed,
-)
+from transformers import (AutoConfig, AutoTokenizer, DataCollatorForSeq2Seq,
+                          EncoderDecoderConfig, EncoderDecoderModel,
+                          HfArgumentParser, PfeifferConfig, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments, default_data_collator,
+                          set_seed)
 from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
@@ -103,6 +95,9 @@ class ModelArguments:
     )
     dec_adapters_name: str = field(
         default=None, metadata={"help": "Name to instantiate adapters for decoder"},
+    )
+    adapters_reduction_size: str = field(
+        default=16, metadata={"help": "Reduction size to the bottleneck layer of adapters"},
     )
     cache_dir: Optional[str] = field(
         default=None,
@@ -390,6 +385,19 @@ def main():
         model = EncoderDecoderModel.from_encoder_decoder_pretrained(
             model_args.enc_model_name_or_path, model_args.dec_model_name_or_path
         )
+    elif model_args.enc_model_name_or_path or model_args.dec_model_name_or_path:
+        # In case one of the encoder or decoder is not initalized, load the models from
+        # config but then reset all the weights to their originals
+        logger.info(
+            f"Loading pretraining {model_args.enc_model_name_or_path} and {model_args.dec_model_name_or_path}"
+        )
+        model = EncoderDecoderModel.from_encoder_decoder_pretrained(
+            model_args.enc_config_name, model_args.dec_config_name
+        )
+        if not model_args.enc_model_name_or_path:
+            model.encoder.apply(model.encoder._init_weights)
+        elif not model_args.dec_model_name_or_path:
+            model.decoder.apply(model.decoder._init_weights)
     else:
         encoder_config = AutoConfig.from_pretrained(
             model_args.enc_config_name,
@@ -431,7 +439,7 @@ def main():
     # Activating adaptesr
     ##################################################
     if model_args.enc_adapters_name or model_args.dec_adapters_name:
-        adapter_config = PfeifferConfig()
+        adapter_config = PfeifferConfig(model_args.adapters_reduction_size)
         if model_args.enc_adapters_name and model_args.dec_adapters_name:
             # Add adapters in both encoder and decoder
             model_args.dec_adapters_name = model_args.enc_adapters_name
@@ -449,9 +457,9 @@ def main():
             model.encoder.train_adapter(model_args.enc_adapters_name)
             model.decoder.freeze_model(True)
         # Since weights other than the adapters will be frozen, we need to reactivate the
-        # cross attention layer
+        # cross attention layer. Just in case, we also activate the prediction layer in decoder
         for k, v in model.named_parameters():
-            if "crossattention" in k:
+            if "crossattention" in k and "decoder.cls.predictions" in k:
                 v.requires_grad = True
     if model_args.seq2seq_model_path:
         logger.info(f"Restoring model from {model_args.seq2seq_model_path}")
