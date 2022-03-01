@@ -23,7 +23,7 @@ $PYTHON $WORKDIR/experiments_mt.py \
     --source_lang de \
     --target_lang en \
     --dataset_dir $WORKDIR/dataset/iwslt14 \
-    --output_dir $MODELDIR/outputs/baseline_bert \
+    --output_dir $MODELDIR/baseline_bert \
     --max_source_length 512 \
     --max_target_length 180 \
     --preprocessing_num_workers 8 \
