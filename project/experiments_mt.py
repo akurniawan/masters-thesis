@@ -413,13 +413,6 @@ def main():
             model.encoder.apply(model.encoder._init_weights)
         elif not model_args.dec_model_name_or_path:
             model.decoder.apply(model.decoder._init_weights)
-
-        # Need to freeze all layers except the crossattention and the prediction layer
-        for k, v in model.named_parameters():
-            if "crossattention" in k or "decoder.cls.predictions" in k:
-                v.requires_grad = True
-            else:
-                v.requires_grad = False
     else:
         encoder_config = AutoConfig.from_pretrained(
             model_args.enc_config_name,

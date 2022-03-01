@@ -13,7 +13,7 @@ MODELDIR=/storage/brno3-cerit/home/akurniawan/adapters-project/outputs
 CACHE_FOLDER=/storage/brno3-cerit/home/akurniawan/adapters-project/.cache
 
 WANDB_API_KEY=45ca700bd4648136b44820bfc7dfde28e203d204 \
-WANDB_PROJECT=iwslt_bigadapter_zbert_bigadapter_randdec\
+WANDB_PROJECT=iwslt_bigadapter_zbert_bigadapter_randdec \
 $PYTHON $WORKDIR/experiments_mt.py \
     --enc_config_name bert-base-german-dbmdz-uncased \
     --dec_config_name bert-base-uncased \
@@ -26,7 +26,7 @@ $PYTHON $WORKDIR/experiments_mt.py \
     --dataset_config_name de-en \
     --source_lang de \
     --target_lang en \
-    --output_dir $MODELDIR/bigadapter_zbert_bigadapter_randdec\
+    --output_dir $MODELDIR/bigadapter_zbert_bigadapter_randdec \
     --max_source_length 512 \
     --max_target_length 180 \
     --preprocessing_num_workers 8 \

@@ -17,7 +17,6 @@ WANDB_PROJECT=iwslt_zbert_bigadapter_randdec \
 $PYTHON $WORKDIR/experiments_mt.py \
     --enc_config_name bert-base-german-dbmdz-uncased \
     --dec_config_name bert-base-uncased \
-    --enc_adapters_name iwslt_adapters \
     --dec_adapters_name iwslt_adapters \
     --adapters_reduction_size 8 \
     --enc_model_name_or_path /storage/brno3-cerit/home/akurniawan/adapters-project/outputs/bert_de_zeroed \
