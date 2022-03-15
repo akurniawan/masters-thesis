@@ -40,7 +40,7 @@ $PYTHON $WORKDIR/experiments_mt.py \
     --save_steps 2000 \
     --per_device_eval_batch_size 64 \
     --per_device_train_batch_size 16 \
-    --num_train_epochs 20.0 \
+    --num_train_epochs 40.0 \
     --warmup_steps 4000 \
     --pad_to_max_length True \
     --do_train --do_eval --do_predict --predict_with_generate \

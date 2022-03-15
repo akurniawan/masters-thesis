@@ -29,19 +29,11 @@ import torch
 import torch.optim as opt
 import transformers
 from datasets import load_dataset, load_from_disk, load_metric
-from transformers import (
-    AutoConfig,
-    AutoTokenizer,
-    DataCollatorForSeq2Seq,
-    EncoderDecoderConfig,
-    EncoderDecoderModel,
-    HfArgumentParser,
-    PfeifferConfig,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    default_data_collator,
-    set_seed,
-)
+from transformers import (AutoConfig, AutoTokenizer, DataCollatorForSeq2Seq,
+                          EncoderDecoderConfig, EncoderDecoderModel,
+                          HfArgumentParser, PfeifferConfig, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments, default_data_collator,
+                          set_seed)
 from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
@@ -283,6 +275,8 @@ class DataTrainingArguments:
         if self.val_max_target_length is None:
             self.val_max_target_length = self.max_target_length
 
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 def main():
     # See all possible arguments in src/transformers/training_args.py
@@ -679,6 +673,7 @@ def main():
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
 
+    print("Total trainable variables:", count_parameters(model))
     # Training
     if training_args.do_train:
         checkpoint = None
