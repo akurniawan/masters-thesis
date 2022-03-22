@@ -29,11 +29,20 @@ import torch
 import torch.optim as opt
 import transformers
 from datasets import load_dataset, load_from_disk, load_metric
-from transformers import (AutoConfig, AutoTokenizer, DataCollatorForSeq2Seq,
-                          EncoderDecoderConfig, EncoderDecoderModel,
-                          HfArgumentParser, PfeifferConfig, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments, default_data_collator,
-                          set_seed)
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    BertConfig,
+    DataCollatorForSeq2Seq,
+    EncoderDecoderConfig,
+    EncoderDecoderModel,
+    HfArgumentParser,
+    PfeifferConfig,
+    Seq2SeqTrainer,
+    Seq2SeqTrainingArguments,
+    default_data_collator,
+    set_seed,
+)
 from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
@@ -275,8 +284,13 @@ class DataTrainingArguments:
         if self.val_max_target_length is None:
             self.val_max_target_length = self.max_target_length
 
-def count_parameters(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+def count_parameters(model, trainable=True):
+    if trainable:
+        return sum(p.numel() for p in model.parameters() if p.requires_grad)
+    else:
+        return sum(p.numel() for p in model.parameters() if not p.requires_grad)
+
 
 def main():
     # See all possible arguments in src/transformers/training_args.py
@@ -400,12 +414,15 @@ def main():
         logger.info(
             f"Loading pretraining {model_args.enc_model_name_or_path} and {model_args.dec_model_name_or_path}"
         )
-        model = EncoderDecoderModel.from_encoder_decoder_pretrained(
-            model_args.enc_config_name, model_args.dec_config_name
-        )
         if not model_args.enc_model_name_or_path:
+            model = EncoderDecoderModel.from_encoder_decoder_pretrained(
+                model_args.enc_config_name, model_args.dec_model_name_or_path
+            )
             model.encoder.apply(model.encoder._init_weights)
         elif not model_args.dec_model_name_or_path:
+            model = EncoderDecoderModel.from_encoder_decoder_pretrained(
+                model_args.enc_model_name_or_path, model_args.dec_config_name
+            )
             model.decoder.apply(model.decoder._init_weights)
     else:
         encoder_config = AutoConfig.from_pretrained(
@@ -448,7 +465,7 @@ def main():
     # Activating adaptesr
     ##################################################
     if model_args.enc_adapters_name or model_args.dec_adapters_name:
-        adapter_config = PfeifferConfig(model_args.adapters_reduction_size)
+        adapter_config = PfeifferConfig(reduction_factor=int(model_args.adapters_reduction_size))
         if model_args.enc_adapters_name and model_args.dec_adapters_name:
             # Add adapters in both encoder and decoder
             model_args.dec_adapters_name = model_args.enc_adapters_name
@@ -673,7 +690,18 @@ def main():
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
 
-    print("Total trainable variables:", count_parameters(model))
+    trainable_vars = count_parameters(model)
+    untrainable_vars = count_parameters(model, trainable=False)
+    ratio_vars = trainable_vars / untrainable_vars
+    print(
+        "Total trainable variables: ",
+        trainable_vars,
+        ", Total untrainable variables: ",
+        untrainable_vars,
+        ", Total ratio: ",
+        ratio_vars,
+        sep="",
+    )
     # Training
     if training_args.do_train:
         checkpoint = None

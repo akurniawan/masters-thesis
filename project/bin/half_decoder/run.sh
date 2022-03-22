@@ -1,6 +1,6 @@
 for FILE in run_*; do 
     echo $FILE;
-    if grep -q "zsbert" <<< "$FILE"; then
+    if [[ $FILE =~ "bigadapter" || $FILE =~ "zbert" ]]; then
         qsub $FILE;
     fi
     # qsub $FILE;
