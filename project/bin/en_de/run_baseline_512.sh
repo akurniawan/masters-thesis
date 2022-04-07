@@ -4,7 +4,7 @@
 #PBS -m abe
 #PBD -M akurniawan.cs@gmail.com
 #PBS -q gpu@cerit-pbs.cerit-sc.cz
-#PBS -N akurniawan_mt_adapters_zsbert
+#PBS -N akurniawan_mt_baseline_bert_en_de_512
 
 PYTHON=/storage/brno3-cerit/home/akurniawan/conda_env/bin/python
 WORKDIR=/storage/plzen1/home/akurniawan/adapters-project
@@ -12,22 +12,20 @@ MODELDIR=/storage/brno3-cerit/home/akurniawan/adapters-project/outputs
 CACHE_FOLDER=/storage/brno3-cerit/home/akurniawan/adapters-project/.cache
 
 WANDB_API_KEY=45ca700bd4648136b44820bfc7dfde28e203d204 \
-WANDB_PROJECT=iwslt_adapters_zsbert \
+WANDB_PROJECT=iwslt_baseline_bert_en_de \
 $PYTHON $WORKDIR/experiments_mt.py \
-    --enc_config_name bert-base-german-dbmdz-uncased \
-    --dec_config_name bert-base-uncased \
-    --enc_adapters_name iwslt_adapters \
-    --dec_adapters_name iwslt_adapters \
-    --enc_model_name_or_path /storage/brno3-cerit/home/akurniawan/adapters-project/outputs/bert_de_zero_reduced \
-    --dec_model_name_or_path /storage/brno3-cerit/home/akurniawan/adapters-project/outputs/bert_en_zero_reduced \
+    --dec_config_name bert-base-german-dbmdz-uncased \
+    --enc_config_name bert-base-uncased \
+    --dec_model_name_or_path bert-base-german-dbmdz-uncased \
+    --enc_model_name_or_path bert-base-uncased \
     --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
     --dataset_config_name de-en \
-    --source_lang de \
-    --target_lang en \
+    --source_lang en \
+    --target_lang de \
     --dataset_dir $WORKDIR/dataset/iwslt14 \
-    --output_dir $MODELDIR/adapters_zsbert \
+    --output_dir $MODELDIR/baseline_bert_en_de_512 \
     --max_source_length 512 \
-    --max_target_length 180 \
+    --max_target_length 512 \
     --preprocessing_num_workers 8 \
     --evaluation_strategy "steps" \
     --load_best_model_at_end True \

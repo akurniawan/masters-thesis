@@ -1,17 +1,40 @@
-\chapter{Experiment Setup}
+% Target 5 pages
 
-\section{Dataset}
-- volume of data
-- preprocessing
+\chapter{Experiment Setup}
+In this chapter we describe our selection of dataset, framework, and automatic evaluation we used for the experiments. We start by describing a set of dataset as well as the tokenization that we use in Section \ref{sec:dataset} as well as our reasoning on choosing the dataset. We then move forward to the framework we use to implement the neural network, training, and evaluation phase in Section \ref{sec:framework}. Finally, we will discuss automatic evaluation we use during the experiments in Section \ref{sec:aeval}.
+
+\section{German-to-English Dataset}
+\label{sec:dataset}
+The scope of our experiment is in a single language pair German$\rightarrow$English. We only select a single language pair as we want to focus our experiment on understanding the behaviour of BERT and the adapters in machine translation domain and not focusing on generalization in multiple language pairs. We select IWSLT14 and WMT19 as our primary dataset. IWSLT14 will be mainly used as the dataset for fine-tuning and testing the final performance of the model, while WMT19 is used for the additional dataset in pre-training as well as normal training in some of our baselines.
+
 \subsection{WMT}
+- Statistics of the data (number of sentences, number of words, etc)
+- Where the data was collected from
+- What's the data is used (training from scratch and lm training)
+
 \subsection{IWSLT}
+- Statistics of the data (number of sentences, number of words, etc)
+- Where the data was collected from
+- What's the data is used as (fine-tuning and evaluation)
+
 \subsection{Segmentation}
+% - Using huggingface implementation of WordPiece https://huggingface.co/docs/transformers/tokenizer_summary
+
 
 \section{Framework}
-\subsection{HuggingFace}
+\label{sec:framework}
+\subsection{HuggingFace Transformer}
+- Brief explanation of huggingface
+- Explaining the architecture that we use
+- How we use huggingface to implement the experiments
+
 \subsection{HuggingFace Hub}
+- Brief explanation of huggingface hub
+- Which model that we use for the experiments (english and german)
 
 \section{Automatic Evaluation}
+\label{sec:aeval}
+- Explanation about BLEU
 
 % \section{Models}
 % \subsection{Transformer and BERT}

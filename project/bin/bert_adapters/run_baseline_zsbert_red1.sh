@@ -18,6 +18,7 @@ $PYTHON $WORKDIR/experiments_mt.py \
     --dec_config_name bert-base-uncased \
     --enc_adapters_name iwslt_adapters \
     --dec_adapters_name iwslt_adapters \
+    --adapters_reduction_size 1 \
     --enc_model_name_or_path /storage/brno3-cerit/home/akurniawan/adapters-project/outputs/bert_de_zero_reduced \
     --dec_model_name_or_path /storage/brno3-cerit/home/akurniawan/adapters-project/outputs/bert_en_zero_reduced \
     --dataset_loader_script $WORKDIR/dataset/iwslt14/iwslt_loader.py \
@@ -25,7 +26,7 @@ $PYTHON $WORKDIR/experiments_mt.py \
     --source_lang de \
     --target_lang en \
     --dataset_dir $WORKDIR/dataset/iwslt14 \
-    --output_dir $MODELDIR/adapters_zsbert \
+    --output_dir $MODELDIR/adapters_zsbert_1_reduction \
     --max_source_length 512 \
     --max_target_length 180 \
     --preprocessing_num_workers 8 \

@@ -29,20 +29,12 @@ import torch
 import torch.optim as opt
 import transformers
 from datasets import load_dataset, load_from_disk, load_metric
-from transformers import (
-    AutoConfig,
-    AutoTokenizer,
-    BertConfig,
-    DataCollatorForSeq2Seq,
-    EncoderDecoderConfig,
-    EncoderDecoderModel,
-    HfArgumentParser,
-    PfeifferConfig,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    default_data_collator,
-    set_seed,
-)
+from transformers import (AutoConfig, AutoTokenizer, BertConfig,
+                          DataCollatorForSeq2Seq, EncoderDecoderConfig,
+                          EncoderDecoderModel, HfArgumentParser,
+                          PfeifferConfig, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments, default_data_collator,
+                          set_seed)
 from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
@@ -424,6 +416,13 @@ def main():
                 model_args.enc_model_name_or_path, model_args.dec_config_name
             )
             model.decoder.apply(model.decoder._init_weights)
+
+        # Need to freeze all layers except the crossattention and the prediction layer
+        for k, v in model.named_parameters():
+            if "crossattention" in k or "decoder.cls.predictions" in k:
+                v.requires_grad = True
+            else:
+                v.requires_grad = False
     else:
         encoder_config = AutoConfig.from_pretrained(
             model_args.enc_config_name,
