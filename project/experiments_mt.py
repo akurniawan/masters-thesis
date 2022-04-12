@@ -100,6 +100,12 @@ class ModelArguments:
     adapters_reduction_size: str = field(
         default=16, metadata={"help": "Reduction size to the bottleneck layer of adapters"},
     )
+    freeze_all: str = field(
+        default=True,
+        metadata={
+            "help": "Whether to freeze all layers except cross attention and output layers or not"
+        },
+    )
     cache_dir: Optional[str] = field(
         default=None,
         metadata={"help": "Where to store the pretrained models downloaded from huggingface.co"},
@@ -394,12 +400,13 @@ def main():
             model_args.enc_model_name_or_path, model_args.dec_model_name_or_path
         )
 
-        # Need to freeze all layers except the crossattention and the prediction layer
-        for k, v in model.named_parameters():
-            if "crossattention" in k or "decoder.cls.predictions" in k:
-                v.requires_grad = True
-            else:
-                v.requires_grad = False
+        if model_args.freeze_all:
+            # Need to freeze all layers except the crossattention and the prediction layer
+            for k, v in model.named_parameters():
+                if "crossattention" in k or "decoder.cls.predictions" in k:
+                    v.requires_grad = True
+                else:
+                    v.requires_grad = False
     elif model_args.enc_model_name_or_path or model_args.dec_model_name_or_path:
         # In case one of the encoder or decoder is not initalized, load the models from
         # config but then reset all the weights to their originals

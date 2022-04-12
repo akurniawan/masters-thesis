@@ -1,8 +1,8 @@
 % Target: 35 pages
 % Current: 3
 
-\chapter{Experiments Results}
-In this work, we propose to use Transformer architecture with BERT as the pre-train weights in both encoder and decoder components in Machine Translation tasks and use adapters during fine-tuning. We separate the experiments into four different areas:
+\chapter{Adapters in Machine Translation}
+The aim of this Chapter is to understand the impact of pre-trained models when fine-tuning machine translation model with adapters. We propose to use Transformer architecture with BERT and manually trained language models as the pre-train weights in both encoder and decoder components while using adapters for the fine-tuning. To be more specific, we divide the experiments into four different areas:
 \begin{itemize}
     \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights (\texttt{Pre-trained BERT})
     \item Use Transformer architecture with BERT configuration and pre-train the models with MLM objective on IWSLT and WMT data (\texttt{Pre-trained Transformer})
@@ -10,7 +10,21 @@ In this work, we propose to use Transformer architecture with BERT as the pre-tr
     \item Use Transformer architecture with BERT weights as the pre-train weights where the weights are shuffled (\texttt{Pre-trained shuffled})
 \end{itemize}
 
-\section{Adapters Comparison}
+\section{Experiments setup}
+\subsection{Language Model}
+
+\subsubsection{Dataset}
+\subsubsection{Model}
+
+\subsection{Machine Translation}
+\subsubsection{Dataset}
+\subsubsection{Model}
+
+\section{Experiments results}
+\subsection{Language Model}
+
+\subsection{Machine Translation}
+\subsubsection{Adapters Comparison}
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/baseline.png}}
     \centering
@@ -33,18 +47,18 @@ To see the impact of including adapters, we compare the result on different size
 
 \begin{table*}[]
     \centering
-    \begin{tabular}{l}
-        \hline
-        \multicolumn{1}{c}{\textbf{Random Weights + Adapters}} \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: wir tanzen im tempel und werden zu gott. \& quot ;\\ \textbf{prediction}:we \& apos ; re going to be able to become god. \& quot ;\end{tabular}                              \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: aber gleichzeitig hatten sie eine klare kenntnis des waldes, die erstaunlich war.\\ \textbf{prediction}:but at the same time, they had a clear of the audience who was amazing..\end{tabular}                              \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: es ist so wunderbar. ihr musst es beschutzen. \& quot ;\\ \textbf{prediction}:it \& apos ; s wonderful. you have to protect it. \& quot ;\end{tabular}                              \\ \hline
+    \begin{tabular}{@{}c@{}}
+        \toprule
+        \textbf{Random Weights + Adapters}                                                                                                                                                                                                             \\ \midrule
+        \begin{tabular}[c]{@{}c@{}}\textbf{input}: wir tanzen im tempel und werden zu gott. \& quot ;\\ \textbf{prediction}: we \& apos ; re going to be able to become god. \& quot ;\end{tabular}                                                    \\ \midrule
+        \begin{tabular}[c]{@{}c@{}}\textbf{input}: aber gleichzeitig hatten sie eine klare kenntnis des waldes, \\ die erstaunlich war.\\ \textbf{prediction}: but at the same time, they had a clear of the audience \\ who was amazing.\end{tabular} \\ \midrule
+        \begin{tabular}[c]{@{}c@{}}\textbf{input}: es ist so wunderbar. ihr musst es beschutzen. \& quot ;\\ \textbf{prediction}: it \& apos ; s wonderful. you have to protect it. \& quot ;\end{tabular}                                             \\ \bottomrule
     \end{tabular}
     \caption{Prediction results from randomly set pre-trained model fine-tuned with adapters}
     \label{tab:qtrand}
 \end{table*}
 
-\section{Random and Shuffled Pre-training Weights}
+\subsubsection{Random and Shuffled Pre-training Weights}
 We can see from Figure \ref{img:shfrndcmp} that the performance of the model that uses random weights as the pre-training model is more stable than the one using shuffled BERT weights. Both of the shuffled BERT models suffer from gradient explosion similar to the IWSLT model we show in the previous section. Although the performance of the random model is still below the baseline model, it is interesting to see that only fine-tuning adapters and the cross-attention layer manage to achieve a reasonable BLEU score, considering that the pre-training models do not contain any meaningful information.
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/randomshuffled.png}}
@@ -53,7 +67,7 @@ We can see from Figure \ref{img:shfrndcmp} that the performance of the model tha
     \label{img:shfrndcmp}
 \end{figure}
 
-\section{Random Pretraining vs. Out-of-Domain Data}
+\subsubsection{Random Pretraining vs. Out-of-Domain Data}
 We further analyze the random weights by comparing the result with the best performing, baseline, and transformer models we pre-trained ourselves. From Figure \ref{img:rndbslcmp}, we can see that the performance of the random model achieves a similar result to the baseline model that uses 2 million training sentence pairs. While the performance is still far from the baseline that is trained using only IWSLT data, this result shows the base model's structure helps the adapter achieve a meaningful performance with very small weights required for the fine-tuning.
 
 We perform a quick check to the output of the model in Table \ref{tab:qtrand}. We can see from the first two lines that the model hash difficulty to capture complex phrases. On the first row, the model missed \textbf{tanzen im tempel} which means \textbf{dancing in the temple}. For the second row, the model confuses \textbf{knowledge of the forest} and output \textbf{audience instead}. Furthermore, the model also does not translate the word \textbf{kenntnis} and makes the translation unclear since the object of the sentence is missing. Despite those mistakes, the model still can capture simple sentences as shown on the third row. Another observation that we noticed in the generated output is the tokenization of \texttt{\&quot\;} and \texttt{\&amp\;}. Instead of being treated as a single token, the tokenizer treats the token as three different subword token. We notice that this is due to the inavailability of the aforementioned token in the pre-trained BERT vocabulary.
@@ -67,24 +81,25 @@ We perform a quick check to the output of the model in Table \ref{tab:qtrand}. W
 \end{figure}
 
 \section{Qualitative Comparison}
-\begin{table*}[]
+\begin{sidewaystable*}
+    \centering
     \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{Baseline IWSLT}}        &
-        \multicolumn{1}{c|}{\textbf{IWSLT + WMT (total 2m)}} &
-        \multicolumn{1}{c|}{\textbf{BERT + Adapters}}          \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: do you remember\\ reading to the patients? on the\end{tabular}                            &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: do you remember\\ the patient with the tingling\\ revenge?\end{tabular}                           &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: remember the\\ patient with\\ the bruised remorse?\end{tabular}                             \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ got up..\end{tabular}                           &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ put on..\end{tabular}                           &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ put it down.\end{tabular}                             \\ \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: but in our discovery\\ of the world, we \& apos ;\\ ve got all sorts of different\end{tabular}                           &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: - - but in our discovery\\ of the world, we have\\ all kinds of different methods.\end{tabular}                           &
-        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: but in our discovery\\ of the world, we have\\ all sorts of different ways of doing\\ things.\end{tabular}                             \\ \hline
+        \multicolumn{1}{|c|}{\textbf{Baseline IWSLT}}                                                                                                                                                                                                                     &
+        \multicolumn{1}{c|}{\textbf{IWSLT + WMT (total 2m)}}                                                                                                                                                                                                              &
+        \multicolumn{1}{c|}{\textbf{BERT + Adapters}}                                                                                                                                                                                                                                \\ \hline
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: do you remember\\ reading to the patients? on the\end{tabular}                                                                &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: do you remember\\ the patient with the tingling\\ revenge?\end{tabular}                                                       &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: erinnerst du dich an\\ den patienten\\ mit dem gereizten rachen? \\ \textbf{prediction}: remember the\\ patient with\\ the bruised remorse?\end{tabular}                                                                          \\ \hline
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ got up..\end{tabular}                                                                                                                       &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ put on..\end{tabular}                                                                                                                       &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: großartig, sagte ich.\\ legte auf.\\ \textbf{prediction}: great, i said.\\ put it down.\end{tabular}                                                                                                                              \\ \hline
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: but in our discovery\\ of the world, we \& apos ;\\ ve got all sorts of different\end{tabular}  &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: - - but in our discovery\\ of the world, we have\\ all kinds of different methods.\end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}\textbf{input}: - - aber in unserer\\ entdeckung der welt, haben\\ wir alle arten unterschiedlicher\\ methoden.\\ \textbf{prediction}: but in our discovery\\ of the world, we have\\ all sorts of different ways of doing\\ things.\end{tabular} \\ \hline
     \end{tabular}
     \caption{Prediction results from 1) Baseline model trained with only IWSLT data; 2) Pre-trained model with adapters where we pre-train the model with IWSLT and WMT with a total of 2 million pre-training data; 3) BERT with adapters.}
     \label{tab:qtvout}
-\end{table*}
+\end{sidewaystable*}
 We perform a sanity check to compare the generated results on some of our models. This sanity check is to check the errors produced by the models on different techniques.
 From Table \ref{tab:qtvout}, we can see for the first example none of the models managed to generate the correct result. However, BERT + adapters and 2 million pre-trained base models manage to generate the proper context where the result is still discussing \textbf{the patient}. The wrong part is when the model generates an incorrect translation regarding the patient's disease. The second example shows that the BERT + adapters create the correct and better output than the other models. The final example shows that BERT + adapters generate an interesting output where it manages to remove unimportant characters such as \texttt{--} and produce readable output. There may be a slightly different opinion on this example as the 2 million pre-trained base model generate a more concise output.

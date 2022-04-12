@@ -1,51 +1,73 @@
 % Target: 35 pages
 % Current: 3
 
-\chapter{Experiments Results 2}
-In this work, we propose to use Transformer architecture with BERT as the pre-train weights in both encoder and decoder components in Machine Translation tasks and use adapters during fine-tuning. We separate the experiments into four different areas:
+\chapter{Adapters Effectivity in Machine Translation}
+In this Chapter, we propose to use BERT and adapters for Machine Translation task. Specifically, we are interested to understand the effectivity of adapters when applied to the machine translation task by investigating different usage scenarios of adapters in sequence-to-sequence (\texttt{seq2seq}) framework. We conduct the experiments by separating them into three different areas:
 \begin{itemize}
-    \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights (\texttt{Pre-trained BERT})
-    \item Use Transformer architecture with BERT configuration and pre-train the models with MLM objective on IWSLT and WMT data (\texttt{Pre-trained Transformer})
-    \item Use Transformer architecture with BERT configuration and fully random weights as the pre-train weights (\texttt{Pre-trained random})
-    \item Use Transformer architecture with BERT weights as the pre-train weights where the weights are shuffled (\texttt{Pre-trained shuffled})
+    \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights and investigate the importance of adapters in encoder or decoder.
+    \item Use BERT weights and investigate the importance of the pre-trained models in the encoder or decoder while fine-tuning with adapters and setting the weights of the opposite side with random numbers.
+    \item Down-scaling BERT weights by either zeroing out some elements in BERT (\texttt{zbert}) or completely removing them from the weight matrix (\texttt{zsbert}).
 \end{itemize}
+
+\section{Fixed Variable Parameters of Experients}
+\subsection{Framework}
+\begin{table}[]
+    \centering
+    \begin{tabular}{@{}cc@{}}
+        \toprule
+        \textbf{Name}            & \textbf{Value}        \\ \midrule
+        \textbf{Batch size}      & 64                    \\
+        \textbf{Learning rate}   & 0.0005                \\
+        \textbf{Vocabulary size} & 31102 (de), 30522(en) \\ \bottomrule
+    \end{tabular}
+    \caption{Fixed hyperparameters throughout the experiments}
+    \label{tab:hyp_invest}
+\end{table}
+
+As we mentioned on tkhe beginning of the chapter, we have several scenario we use to conduct the experiments. Despite various possibilities of different setup, here we describe variables that we fixed throughout the experiments. As we have mentioned on Chapter 3 (**change this to ref**), we use Huggingface as our main framework with added modification for adapters. In contrary to Chapter 4 (**change this to ref**), we do not investigate language models that we train ourselves, but instead, we focus mainly on BERT language model. We use the same hyperparameters to Chapter 3(**change this to ref**) which we describe on Table \ref{tab:hyp_invest}
+
+
+\subsection{Dataset}
+As mentioned on the previous Section, in this experiment we no longer focus on the language model and instead we focus mainly on the machine translation. We have already described on Chapter 3 (**change this to ref**) that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we use exclusively on IWSLT for our fine-tuning and evaluation stage.
+
 
 \section{Original BERT}
 \subsection{Size of adapters}
 \subsubsection{Experiment setup}
+\paragraph{}
 In this experiments, we are keeping the rest of the parameters the same for all the models. The only parameter that we modify is the size of reduction ratio in the adapters. If we recall, adapters are bottleneck layers that will reduce the input size dimension before scaling it back. The definition of reduction ratio here translates to the number of dimension that we reduce within the bottleneck layer. To be more precise, if we use ``16'' as the reduction ratio, this means we are reducing the original layers by ``16'' and then scale it back to the original size.
 
 We are using a various size of reduction ratio to compare the result. The purpose of this reduction is to see whether we can see further benefit in enlarging the adapters bottleneck size in term of performance. For this experiments, we use 16, 8, 4, 2, 1 as the ratio values. We compare the results with the baseline BERT that we fine-tuned by only modifying the cross-attention layer. We will refer this baseline as baseline BERT for the entirety of this work.
 
 \subsubsection{Experiment results}
-Comparing the results of the baseline BERT with models in different reduction ratio, we can see that even the smallest model can already outperform the baseline in around 2 BLEU. This shows that the adapters can help to further improve the performance of the model by adding only a small amount of weights during the fine-tuning.
+In this section, we are comparing the results of the baseline BERT with models that fine-tuned with adapters in different reduction ratios. For the baseline BERT model, we only fine-tuned the cross-attention layers and keep the rest of the weights impact. This is to understand whether we can gain benefit in just fine-tuning the cross-attention layer. We can see from Figure \ref{img:adapt_bert_ratio} that even the smallest model (\texttt{adapt\_bert\_reduc\_16}) can already outperform the baseline by around 2 BLEU. This shows that the adapters can help further improve the model's performance by adding only a small amount of weights during the fine-tuning.
 
-\begin{figure}[h]
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_baseline_adapters.png}}
     \centering
-    \caption{Comparison between baseline BERT model and adapters model with different ratio.}
+    \caption{Comparison between baseline BERT model and adapters model with different ratio (16, 8, 4, 2, 1).}
     \label{img:adapt_bert_ratio}
 \end{figure}
 
-We can see from Figure \ref{img:adapt_bert_ratio} the comparison between different size of the ratio. The difference between the ratios are pretty minimal and it suggests that there is not much benefit in enlarging the adapters for the normal size BERT. It is possible that for large size model such as BERT, it is no longer trivial to just append adapters to fine-tune the model. As we recall from Section xxx, the biggest problem of using BERT is the difference in the output layers where we understand that BERT was trained using MLM objective. The MLM objective is naturally different from the normal machine translation objective such as autoregression.
+Furthermore, the difference between the ratios is pretty minimal. It suggests that there is not much benefit in expanding the size of adapters for the normal size BERT. It is possible that it is no longer trivial to append adapters to fine-tune the model for large-sized models such as the original BERT. Further improvement may be required to handle the different nature of BERT's output as it is naturally different from the normal machine translation objective such as auto-regression.
 
 \subsection{Position of adapters (encoder vs decoder)}
 \subsubsection{Experiment setup}
 We would like to see the importance of adapters when put in different place. Since in this work we are working with sequence-to-sequence architecture, we would like to see whether only incorporating adapters on one side can already beneficial and hence reducing the weights addition to the model.
 
 \subsubsection{Experiment result}
-
-\begin{figure}[h]
+\label{sec:posadares}
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/bert_pos.png}}
     \centering
     \caption{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}).}
     \label{img:adapt_bert_pos}
 \end{figure}
-We can see from Figure \ref{img:adapt_bert_pos} that by just adding the adapters on the encoder part, we already see an improvement and outperform the baseline model. If we remember from the previous chapter where we use the adapters on both side of encoder and decoder, we managed to get around 27. By adding the adapters on the encoder only, we can already see that the model eventually managed to achieve similar performance as if we add the adapters in both side. For the decoder, on the other hand, we can see that there is no benefit in adding the adapters as there are no improvement in terms of BLEU compared to the baseline.
+We can see from Figure \ref{img:adapt_bert_pos} that by just adding the adapters on the encoder part, we see an improvement and outperform the baseline model. By adding the adapters on the encoder only, we can see that the model eventually achieved similar performance as if we added the adapters on both sides. For the decoder, on the other hand, we can see that there is no benefit in adding the adapters as there is no improvement in terms of BLEU compared to the baseline.
 
-It seems that by adding the adapters on the encoder and fine-tune it is more cost effective compared to the decoder. With this finding we can possibly reduce the cost of fine-tuning using adapters by half when we do not include the adapters on the decoder.
+Adding the adapters on the encoder and fine-tuning it is more cost-effective than the decoder. With this finding, we can reduce the cost of fine-tuning by half when we do not include the adapters on the decoder.
 
-\subsection{Position of pre-training models (encoder vs decoder)}
+\subsection{BERT in encoder vs decoder}
 \subsubsection{Experiment setup}
 In this section, we would like to see the importance of having the pre-training models as the initial weights in either the encoder or decoder. In addition to that, we also expand the experiment further by trying to understand the correlation of adding adapters on top of the randomly set weights.
 
@@ -58,8 +80,10 @@ The purpose of the experiments are:
 \end{itemize}
 
 \subsubsection{Experiment results}
+This section compares models that use adapters in both encoder and decoder, only in the encoder and only in the decoder while only initializing either the encoder or decoder with BERT and the counterparts with a random set of weights. The purpose of the experiments is to understand the behaviour of adapters when faced with relatively poor representation in of the components.
+
 \paragraph{Randomly set weights on encoder}
-In this section, we perform comparison amongst models that use adapters in both encoder and decoder, only in encoder, and only in decoder. We would like to see what is the impact of the randomly set weights encoder with the adapters. The main question that we would like to answer is "Compared to the BERT baseline, can adapters restore the missing gap when the encoder does not contain useful information (relative to BERT)?"
+In this part of the section, we want to answer the main question: "To what extent can the adapters restore the missing gap when the encoder does not contain useful information (relative to BERT)?"
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_randenc.png}}
@@ -68,16 +92,16 @@ In this section, we perform comparison amongst models that use adapters in both 
     \label{img:adapt_bert_randenc}
 \end{figure}
 
-We can see from Figure \ref{img:adapt_bert_randenc} that when adapters are appended in both components, we get to almost 20 in BLEU score. This is relatively higher than the other two setup. Compared to the baseline, we are missing 4 points in BLEU when we set the weights on encoder as completely random. This means that the encoder contains relatively important information for the adapters to restore.
+We can see from Figure \ref{img:adapt_bert_randenc} that when adapters are appended in both components, we get to almost 20 in the BLEU score. This is relatively higher than the other two setups (adapters only in the encoder and adapters only in the decoder). However, compared to the baseline, we are missing 4 points in BLEU when we set the weights on the encoder as entirely random. This means that the base encoder model missing relatively essential information that the adapters can not simply restore during the fine-tuning.
 
-Despite missing 4 points in BLEU, we would like to see the performance of the adapters when compared to the model that only fine-tuned on the cross-attention layer. We treat this model as the baseline for this section. We can see that the model that was only fine-tuning the cross-attention layer can not learn at all while the adapters can perform significantly better. This marks the capability of the adapter when faced with randomly set encoder.
+We further focus on the adapters' performance compared to the baseline model that is only fine-tuned on the cross-attention layer to see whether there is any benefit in using adapters or simply fine-tuning the cross-attention is enough. We can see that the model that was only fine-tuning the cross-attention layer can not learn at all, while the adapters can perform significantly better. This marks the capability of the adapter when faced with a randomly set encoder.
 
-When the adapters are removed from the decoder, we see a degradation in performance in about 1 BLEU. However, when the adapters are removed from the encoder, we can see the performance is completely depleted during the training. We also see the same behaviour on the next section when the weights on the decoder is set randomly. This tells us that there is some incompatibility on the weights (random and BERT) where it is not trivial to fine-tune the cross-attention layer without further adjustment on the base model's weights.
+When the adapters are removed from the decoder, we see a degradation in performance in about 1 BLEU. However, when the adapters are removed from the encoder, we can see the performance is completely depleted during the training. We also see the same behaviour in the next section when the weights on the decoder are set randomly. This tells us that there is some incompatibility in the weights (random and BERT) where it is not trivial to fine-tune the cross-attention layer without further adjustment to the base model's weights.
 
 \paragraph{Randomly set weights on decoder}
-Similar to Section xxx (**previous section**), we perform comparison amongst different setup in the adapters placement: adapters in both encoder and decoder, only in encoder, and only in decoder. We would like to understand the impact of the randomly set weights decoder while fine-txfuned with adapters. The main question in this experiment is "Compared to the BERT baseline, can adapters restore the missing gap when the decoder does not contain useful information (relative to BERT)?"
+Similar to the previous section, the main question in this experiment is, "To what extent can the adapters restore the missing gap when the decoder does not contain useful information (relative to BERT)?"
 
-In contrast to when the randomly set weights is in encoder side, we can see from Figure \ref{img:adapt_bert_randdec}, the model have close performance to the one we have on BERT baseline. This tells us that the pre-training weights in encoder are more important than in decoder when we have adapters on both side. However, when remove the adapters on the encoder side, we see similar performance as in the previous section where the performance completely drop to 0 in the middle of training. This further our arguments that adapters are necessary to adjust the weights in the model so that the cross-attention layer can work properly.
+In contrast to when the randomly set weights are on the encoder side, we can see from Figure \ref{img:adapt_bert_randdec}, that the model has a close performance to the one we have on the BERT baseline. This tells us that the pre-training weights in the encoder are more critical than in the decoder when we have adapters on both sides. However, when removing the adapters on the encoder side, we see similar performance as in the previous section, where the performance drops to zero in the middle of training. This furthers our arguments that adapters are necessary to adjust the weights in the model so that the cross-attention layer can work properly.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_randdec.png}}
@@ -86,7 +110,7 @@ In contrast to when the randomly set weights is in encoder side, we can see from
     \label{img:adapt_bert_randdec}
 \end{figure}
 
-On the other hand, when we remove the adapters from the decoder side, we can see that the performance is not as bad as when the adapters are removed from the encoder, but we still see a reduction in performance. We see around < 1 BLEU when the model reach 400k steps in the training stage.
+On the other hand, when we remove the adapters from the decoder side, we can see that the performance is not as bad as when the adapters are removed from the encoder, but we still see a reduction in performance. We see around $<$ 1 BLEU when the model reaches 400k steps in the training stage.
 
 \section{BERT size reduction}
 \subsection{Zeroing columns}
@@ -96,35 +120,35 @@ In this experiment, we will focus on soft reduction of BERT weights by zeroing t
 Other than removing the columns, we also experimenting similar to Section xxx by initializing the adapters either on the encoder or the decoder. The goal of this particular experiments is to understand the behaviour of the model when the pre-trained models are replaced with this particular setup.
 
 \subsubsection{Comparison with BERT baseline (full BERT fine-tuning)}
-We first compare the model without adapter and only fine-tuning the cross-attention layers on \texttt{zbert} model. We use \texttt{zbert} weights on both encoder and decoder so that it is comparable to the BERT baseline.
+We first compare the \texttt{zbert} model without adapters and only fine-tuning the cross-attention layers. We use \texttt{zbert} weights on both encoder and decoder so that it is comparable to the model that uses full-weight BERT. We use the full-weight BERT as the baseline in this experiment.
 
-\begin{figure}[h]
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/baseline_zbert.png}}
     \centering
     \caption{Comparison between baseline BERT model and baseline \texttt{zbert} models.}
     \label{img:baseline_zbert}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_zbert.png}}
     \centering
     \caption{Comparison between baseline BERT model, baseline \texttt{zbert} and adapters \texttt{zbert} models.}
     \label{img:adapter_zbert}
 \end{figure}
 
-We continue our experiment by fine-tuning \texttt{zbert} model that is instantiated on both encoder and decoder side with adapters. We can see in Figure \ref{img:baseline_zbert} that we are losing performance of about 4 BLEU. This is quite significant as this represents we are losing various important features from original BERT model. To see whether we can recover some of the performance with adapters, we perform a simple experiment where we include the adapters during the fine-tuning. We can see from the Figure \ref{img:adapter_zbert}, that we only manage to just recover 1 BLEU with reduction ratio of 16.
+We can see in Figure \ref{img:baseline_zbert} that we are losing performance of about 4 BLEU. This is quite significant as we are losing various essential features from the original BERT model. To see whether we can recover some of the performance with adapters, we continue our experiment by fine-tuning \texttt{zbert} model that is instantiated on both encoder and decoder sides with adapters. We can see from Figure \ref{img:adapter_zbert} that we only managed to recover 1 BLEU with a reduction ratio of 16.
 
-\begin{figure}[h]
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_zbert_ratio.png}}
     \centering
     \caption{Comparison between baseline BERT model and different reduction ratio of \texttt{zbert} models.}
     \label{img:adapter_zbert_ratio}
 \end{figure}
 
-From Figure \ref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially we can see some improvement compared the higher ration. However, when they eventually converge to the similar performance by the end of training. From this we can understand that there is still a limitation for adapters to achieve certain performance, depending on the base pre-trained model that choose to use.
+From Figure \ref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially, we can see some improvement compared to the higher ratio. However, they eventually converge to a similar performance by the end of training with no significant difference between different ratios. From this result, we can understand that depending on the base pre-trained model, adapters still have a limitation in achieving certain performance.
 
-\subsubsection{Adapters position}
-In this section, we are trying to understand whether the position of both adapters and the pre-training models affect the model performance similar as we have seen in Section xxx. We use similar setup as in the previous Section with exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
+\paragraph{Adapters position}
+In this section, we are trying to understand whether the position of both adapters and the pre-training models affect the model performance, similar to what we have seen in Section \ref{sec:posadares}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zbert_pos.png}}
@@ -133,9 +157,9 @@ In this section, we are trying to understand whether the position of both adapte
     \label{img:zbert_pos}
 \end{figure}
 
-We can see from Figure \ref{img:zbert_pos} that when we include adapters on both encoder and decoder, we can outperform the baseline \texttt{zbert} in around 2 BLEU points. This shows that similar to the models that use BERT as the pre-training models, the adapters can help to improve the performance further even though some of the information already missing in the base model.
+We can see from Figure \ref{img:zbert_pos} that when we include adapters on both encoder and decoder, we can outperform the baseline \texttt{zbert} in around 2 BLEU points. This shows that similar to the models that use BERT as the pre-training models, the adapters can help to improve the performance further even though some of the information is already missing in the base model.
 
-Furthermore, we can also see that similar to the BERT model that was fine-tuned with adapters, using adapters only on the encoder side performs much better than in the decoder side. Other than that, we can also see that incorporating adapters only on the encoder side helps the model to achieve better performance faster compared to the model that uses adapters on both side. This further support our hypothesis that updating the representation on the encoder side is more beneficial. If we take a look deeper on model with adapters on the decoder side, the performance is close to the baseline model where we only fine-tune the cross-attention layer. This could mean that fine-tuning the decoder only may not be enough to achieve better performance when the representation from the source side is constant.
+Furthermore, we can also see that similar to the BERT model that was fine-tuned with adapters, using adapters only on the encoder side performs much better than on the decoder side. Other than that, we can also see that incorporating adapters only on the encoder side helps the model achieve better performance faster than the model that uses adapters on both sides. This further support our hypothesis that updating the representation on the encoder side is more beneficial. Looking deeper at the model with adapters on the decoder side, the performance is close to the baseline model, where we only fine-tune the cross-attention layer. This could mean that fine-tuning the decoder may not be enough to achieve better performance when the representation from the source side is constant.
 
 \subsection{Model downscaling}
 \subsubsection{Experiment setup}
@@ -143,7 +167,7 @@ This experiment is the continuation from \texttt{zbert} where we zeroing out som
 
 Furthermore, we also follow similar setup as in Section xxx where we experiment on the position of the adapters position. The goal of this experiments is that we would like to understand the behaviour of the model compared to the baseline as well as \texttt{zbert}.
 
-\subsubsection{Comparison with BERT baseline and zbert}
+\subsubsection{Comparison with BERT baseline and \texttt{zbert}}
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/baseline_zsbert.png}}
@@ -152,27 +176,28 @@ Furthermore, we also follow similar setup as in Section xxx where we experiment 
     \label{img:baseline_zsbert}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_zsbert.png}}
     \centering
-    \caption{Comparison between baseline BERT model, baseline \texttt{zsbert} and adapters \texttt{zsbert} models.}
+    \caption{Comparison between baseline BERT model, baseline \texttt{zbert}, baseline \texttt{zsbert} and adapters \texttt{zsbert} models.}
     \label{img:adapter_zsbert}
 \end{figure}
 
-We begin with the comparison of \texttt{zsbert} with the BERT baseline. We can see from Figure \ref{img:baseline_zsbert} that the performance degrades significantly for almost 10 BLEU. This is also significantly worse than \texttt{zbert} where we only lose 5 BLEU. After some investigation, we realize that it is not straightforward to remove weights from the network as the computation of layer normalization layer in the Transformer will compute different results as the normalization scaling factor will also be different. With manual evaluation, we found that there is a small different between weights that only zeroed and weights that is completely removed. Despite the small difference in the output of layer normalization, the error will be propagated to the top layers and causing the result to differ significantly.
+We begin with the comparison of \texttt{zsbert} with the BERT baseline. We can see from Figure \ref{img:baseline_zsbert} that the performance degrades significantly for almost 10 BLEU. This is also significantly worse than \texttt{zbert} where we only lose 5 BLEU. After some investigation, we realize that removing weights from the network is not straightforward as the computation of layer normalization layer in the transformer will compute different results as the normalization scaling factor will also be different. With manual evaluation, we found a slight difference between weights that were only zeroed and weights that are completely removed. Despite the small difference in the output of layer normalization, the error will be propagated to the top layers, causing the result to differ significantly.
 
-From the aforementioned challenge, we also interested to see whether adapters have the capability to mitigate the problem and able to recover some of the performance. We can see from Figure \ref{img:adapter_zsbert} that adapters with 16 ratio already managed to improve the performance up to 6 BLEU. This shows another capability of adapters to intermediate numerical errors in the middle of the layers.
+From the challenge above, we are also interested to see whether adapters have the capability to mitigate the problem and able to recover some of the performance. We can see from Figure \ref{img:adapter_zsbert} that adapters with a 16 ratio already managed to improve the performance up to 6 BLEU. This shows another capability of adapters to intermediate numerical errors in the middle of the layers. We also notice a leap in final performance when we compare the adapter model with an equal reduction ratio (16) between \texttt{zbert} and \texttt{zsbert}. We can see that initially \texttt{zsbert} performs worse than \texttt{zbert}. After some steps, we can see the performance in \texttt{zbert} starting to stall but not in \texttt{zsbert}. We hypothesize this relates to a similar reason that we stated in the original BERT model, where we could not see any improvement when increasing the reduction ratio. It is possible that when we reduce the size of the original pre-trained model, the adapters manage to adjust the flow of information within the network and better replacing the missing information with new knowledge that is more important to solve the task.
 
-\begin{figure}[h]
+
+\begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_zsbert_ratio.png}}
     \centering
     \caption{Comparison between baseline BERT model and different reduction ratio of \texttt{zsbert} models.}
     \label{img:adapter_zsbert_ratio}
 \end{figure}
 
-In Figure \ref{img:adapter_zsbert_ratio}, when the adapters reduction ratio is further reduced, we can see that the performance also improving up to the point where it has close performance to the baseline model. This remarks a prominent result as we can see from Table \ref{tab:numvars} that the total number of weights (including adapters) is reduced significantly.
+In Figure \ref{img:adapter_zsbert_ratio}, when the adapters reduction ratio is further reduced, we can see that the performance is also improving up to the point where it has the close performance to the baseline model. This remarks a prominent result as we can see from Table \ref{tab:numvars} that the total number of weights (including adapters) is reduced significantly.
 
-\begin{table}[]
+\begin{table*}[]
     \centering
     \begin{tabular}{@{}cccc@{}}
         \toprule
@@ -189,7 +214,7 @@ In Figure \ref{img:adapter_zsbert_ratio}, when the adapters reduction ratio is f
     \end{tabular}
     \caption{Total trainable variables in \texttt{zsbert} with adapters on different ratio vs normal BERT model}
     \label{tab:numvars}
-\end{table}
+\end{table*}
 
 \subsubsection{Adapters position}
 
@@ -200,7 +225,7 @@ In Figure \ref{img:adapter_zsbert_ratio}, when the adapters reduction ratio is f
     \label{img:zsbert_pos}
 \end{figure}
 
-From Figure \ref{img:zsbert_pos}, similar to the \texttt{zbert} experiments, we can see similar behaviour as models that are fine-tuned with adapters outperform the baseline \texttt{zsbert} and \texttt{zbert} models. Compared to \texttt{zbert} experiments, we notice a bigger gap in performance improvement in \texttt{zsbert}. In \texttt{zbert}, the difference between baseline and adapters is in the range of 5 BLEU. On the other hand, in \texttt{zsbert} we see the improvement is in the range of 8 BLEU. This result is particularly interesting for us as we recall from the baseline experiments that due to the numerical error from the layer normalization, we expect the difference is similar to \texttt{zbert} and have lower performance than we currently have. To further deep-dive on this, we refer to Figure \ref{img:zbert_vs_zsbert} to show the comparison between adapters in \texttt{zbert} and \texttt{zsbert}. We compare the adapters model with equal reduction ratio (16) between these two setup. We can see that initially \texttt{zsbert} performs worse than \texttt{zbert}. After some steps, we can see the performance in \texttt{zbert} starting to stall but not in \texttt{zsbert}. We hypothesize this relates to similar reason that we state on the original BERT model where we could not see any improvement when we increase the reduction ratio. \texttt{zsbert} is half the size of original BERT model and \texttt{zbert} model, it is probably that reducing the weights and essentially modifying the architecture by incorporating adapters help the model to achieve better performance.
+From Figure \ref{img:zsbert_pos}, similar to the \texttt{zbert} experiments, we can see similar behaviour as models that are fine-tuned with adapters outperform the baseline \texttt{zsbert} and \texttt{zbert} models. Compared to \texttt{zbert} experiments, we notice a bigger gap in performance improvement in \texttt{zsbert}. In \texttt{zbert}, the difference between baseline and adapters is in the range of 5 BLEU. On the other hand, in \texttt{zsbert} we see the improvement is in the range of 8 BLEU. This result is particularly interesting for us as we recall from the baseline experiments that due to the numerical error from the layer normalization, we expect the difference is similar to \texttt{zbert} and have lower performance than we currently have. To further deep-dive on this, we refer to Figure \ref{img:zbert_vs_zsbert} to show the comparison between adapters in \texttt{zbert} and \texttt{zsbert}. We compare the adapters model with equal reduction ratio (16) between these two setup. We can see that initially \texttt{zsbert} performs worse than \texttt{zbert}. After some steps, we can see the performance in \texttt{zbert} starting to stall but not in \texttt{zsbert}. We hypothesize this relates to similar reason that we state on the original BERT model where we could not see any improvement when we increase the reduction ratio. It is possible that when we reduce the size of the original pre-trained model, the adapters manage to adjust the flow of information within the network and better replacing the missing information with new knowledge that is more important to solve the task.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zbert_vs_zsbert.png}}
