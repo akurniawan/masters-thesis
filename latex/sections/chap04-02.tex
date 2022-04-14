@@ -2,7 +2,7 @@
 % Current: 3
 
 \chapter{Adapters Effectivity in Machine Translation}
-In this Chapter, we propose to use BERT and adapters for Machine Translation task. Specifically, we are interested to understand the effectivity of adapters when applied to the machine translation task by investigating different usage scenarios of adapters in sequence-to-sequence (\texttt{seq2seq}) framework. We conduct the experiments by separating them into three different areas:
+In this Chapter, we continue the study from previous Chapter to understand more about the relation between adapters and pre-trained models. Similar to the previous Chapter, we use BERT and its variance, per-our definition below, as the base pre-trained models and we fine-tune them with adapters. We evaluate the models on machine translation task. The aim of this study is to understand whether we can improve the effectivity of adapters in transformer model for machine translation task by studying the behaviour of adapters when only put in either the encoder or the decoder as well as pursuing the effort to down-scale the pre-training model size and try to recover the performance so that they are comparable to the full-sized model. We conduct the experiments by separating them into three different areas:
 \begin{itemize}
     \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights and investigate the importance of adapters in encoder or decoder.
     \item Use BERT weights and investigate the importance of the pre-trained models in the encoder or decoder while fine-tuning with adapters and setting the weights of the opposite side with random numbers.
@@ -24,7 +24,9 @@ In this Chapter, we propose to use BERT and adapters for Machine Translation tas
     \label{tab:hyp_invest}
 \end{table}
 
-As we mentioned on tkhe beginning of the chapter, we have several scenario we use to conduct the experiments. Despite various possibilities of different setup, here we describe variables that we fixed throughout the experiments. As we have mentioned on Chapter 3 (**change this to ref**), we use Huggingface as our main framework with added modification for adapters. In contrary to Chapter 4 (**change this to ref**), we do not investigate language models that we train ourselves, but instead, we focus mainly on BERT language model. We use the same hyperparameters to Chapter 3(**change this to ref**) which we describe on Table \ref{tab:hyp_invest}
+As we mentioned on tkhe beginning of the chapter, we have several scenario we use to conduct the experiments. Despite various possibilities of different setup, here we describe variables that we fixed throughout the experiments. As we have mentioned on Chapter 3 (**change this to ref**), we use Huggingface as our main framework with added modification for adapters. In contrary to Chapter 4 (**change this to ref**), we do not investigate language models that we train ourselves, but instead, we focus mainly on BERT language model. We use the same hyperparameters to Chapter 3(**change this to ref**) which we describe on Table \ref{tab:hyp_invest}.
+
+The model and hyperparameters that we use throughout the experiment remain the same as described on Chapter \ref{chap:adaptmt}. We use transformer model with sequence-to-sequence architecture and we follow BERT-based configuration to initialize both the encoder and the decoder.
 
 
 \subsection{Dataset}
@@ -33,7 +35,7 @@ As mentioned on the previous Section, in this experiment we no longer focus on t
 
 \section{Original BERT}
 \subsection{Size of adapters}
-\subsubsection{Experiment setup}
+\subsubsection{Experiment setup and motivation}
 \paragraph{}
 In this experiments, we are keeping the rest of the parameters the same for all the models. The only parameter that we modify is the size of reduction ratio in the adapters. If we recall, adapters are bottleneck layers that will reduce the input size dimension before scaling it back. The definition of reduction ratio here translates to the number of dimension that we reduce within the bottleneck layer. To be more precise, if we use ``16'' as the reduction ratio, this means we are reducing the original layers by ``16'' and then scale it back to the original size.
 
@@ -52,7 +54,7 @@ In this section, we are comparing the results of the baseline BERT with models t
 Furthermore, the difference between the ratios is pretty minimal. It suggests that there is not much benefit in expanding the size of adapters for the normal size BERT. It is possible that it is no longer trivial to append adapters to fine-tune the model for large-sized models such as the original BERT. Further improvement may be required to handle the different nature of BERT's output as it is naturally different from the normal machine translation objective such as auto-regression.
 
 \subsection{Position of adapters (encoder vs decoder)}
-\subsubsection{Experiment setup}
+\subsubsection{Experiment setup and motivation}
 We would like to see the importance of adapters when put in different place. Since in this work we are working with sequence-to-sequence architecture, we would like to see whether only incorporating adapters on one side can already beneficial and hence reducing the weights addition to the model.
 
 \subsubsection{Experiment result}
@@ -68,7 +70,7 @@ We can see from Figure \ref{img:adapt_bert_pos} that by just adding the adapters
 Adding the adapters on the encoder and fine-tuning it is more cost-effective than the decoder. With this finding, we can reduce the cost of fine-tuning by half when we do not include the adapters on the decoder.
 
 \subsection{BERT in encoder vs decoder}
-\subsubsection{Experiment setup}
+\subsubsection{Experiment setup and motivation}
 In this section, we would like to see the importance of having the pre-training models as the initial weights in either the encoder or decoder. In addition to that, we also expand the experiment further by trying to understand the correlation of adding adapters on top of the randomly set weights.
 
 We start by defining the definition of the setup in this experiments. In the previous Chapter, we have already introduced randomly set experiment where we instantiate the base Transformer model with only random weights. We then fine-tune the base Transformer model by only updating the adapters and cross-attention layer. In this setup, we are doing experiments in similar concept except that we only initialized the random weights on either the encoder and decoder. We then perform similar setup as in the Chapter xxx (position of adapters) where we put the adapters only in the encoder or decoder.
@@ -114,7 +116,7 @@ On the other hand, when we remove the adapters from the decoder side, we can see
 
 \section{BERT size reduction}
 \subsection{Zeroing columns}
-\subsubsection{Experiment setup}
+\subsubsection{Experiment setup and motivation}
 In this experiment, we will focus on soft reduction of BERT weights by zeroing the weights on every even index columns and rows in both Transformer body as well as in the embedding weights. The way we set this experiments by first manually editing the weights from BERT offline and then use the weights as the pre-trained models that later we will fine-tune using adapters. We further refer this setup as \texttt{zbert} for the rest of this writing.
 
 Other than removing the columns, we also experimenting similar to Section xxx by initializing the adapters either on the encoder or the decoder. The goal of this particular experiments is to understand the behaviour of the model when the pre-trained models are replaced with this particular setup.
@@ -162,7 +164,7 @@ We can see from Figure \ref{img:zbert_pos} that when we include adapters on both
 Furthermore, we can also see that similar to the BERT model that was fine-tuned with adapters, using adapters only on the encoder side performs much better than on the decoder side. Other than that, we can also see that incorporating adapters only on the encoder side helps the model achieve better performance faster than the model that uses adapters on both sides. This further support our hypothesis that updating the representation on the encoder side is more beneficial. Looking deeper at the model with adapters on the decoder side, the performance is close to the baseline model, where we only fine-tune the cross-attention layer. This could mean that fine-tuning the decoder may not be enough to achieve better performance when the representation from the source side is constant.
 
 \subsection{Model downscaling}
-\subsubsection{Experiment setup}
+\subsubsection{Experiment setup and motivation}
 This experiment is the continuation from \texttt{zbert} where we zeroing out some of the matrix elements. Specifically, instead of just zeroing out the elements, we now completely removing those elements from the matrix. The way we do this is similar to the one we do on \texttt{zsbert}. We remove the matrix elements on every even columns and rows in both Transformer body as well as the embedding weights. We similarly do the weights processing offline before using it as the pre-training base model. For the rest of this writing, we refer to this setup as \texttt{zsbert}.
 
 Furthermore, we also follow similar setup as in Section xxx where we experiment on the position of the adapters position. The goal of this experiments is that we would like to understand the behaviour of the model compared to the baseline as well as \texttt{zbert}.
