@@ -54,11 +54,11 @@ In this section, we are comparing the results of the baseline BERT with models t
 Furthermore, the difference between the ratios is pretty minimal. It suggests that there is not much benefit in expanding the size of adapters for the normal size BERT. It is possible that it is no longer trivial to append adapters to fine-tune the model for large-sized models such as the original BERT. Further improvement may be required to handle the different nature of BERT's output as it is naturally different from the normal machine translation objective such as auto-regression.
 
 \subsection{Position of adapters (encoder vs decoder)}
+\label{sec:posada}
 \subsubsection{Experiment setup and motivation}
 We would like to see the importance of adapters when put in different place. Since in this work we are working with sequence-to-sequence architecture, we would like to see whether only incorporating adapters on one side can already beneficial and hence reducing the weights addition to the model.
 
 \subsubsection{Experiment result}
-\label{sec:posadares}
 \begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/bert_pos.png}}
     \centering
@@ -70,6 +70,7 @@ We can see from Figure \ref{img:adapt_bert_pos} that by just adding the adapters
 Adding the adapters on the encoder and fine-tuning it is more cost-effective than the decoder. With this finding, we can reduce the cost of fine-tuning by half when we do not include the adapters on the decoder.
 
 \subsection{BERT in encoder vs decoder}
+\label{sec:pospre}
 \subsubsection{Experiment setup and motivation}
 In this section, we would like to see the importance of having the pre-training models as the initial weights in either the encoder or decoder. In addition to that, we also expand the experiment further by trying to understand the correlation of adding adapters on top of the randomly set weights.
 
@@ -150,7 +151,7 @@ We can see in Figure \ref{img:baseline_zbert} that we are losing performance of 
 From Figure \ref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially, we can see some improvement compared to the higher ratio. However, they eventually converge to a similar performance by the end of training with no significant difference between different ratios. From this result, we can understand that depending on the base pre-trained model, adapters still have a limitation in achieving certain performance.
 
 \paragraph{Adapters position}
-In this section, we are trying to understand whether the position of both adapters and the pre-training models affect the model performance, similar to what we have seen in Section \ref{sec:posadares}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
+In this section, we are trying to understand whether the position of both adapters and the pre-training models affect the model performance, similar to what we have seen in Section \ref{sec:posada}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zbert_pos.png}}
@@ -167,7 +168,7 @@ Furthermore, we can also see that similar to the BERT model that was fine-tuned 
 \subsubsection{Experiment setup and motivation}
 This experiment is the continuation from \texttt{zbert} where we zeroing out some of the matrix elements. Specifically, instead of just zeroing out the elements, we now completely removing those elements from the matrix. The way we do this is similar to the one we do on \texttt{zsbert}. We remove the matrix elements on every even columns and rows in both Transformer body as well as the embedding weights. We similarly do the weights processing offline before using it as the pre-training base model. For the rest of this writing, we refer to this setup as \texttt{zsbert}.
 
-Furthermore, we also follow similar setup as in Section xxx where we experiment on the position of the adapters position. The goal of this experiments is that we would like to understand the behaviour of the model compared to the baseline as well as \texttt{zbert}.
+Furthermore, we also follow similar setup as in Section \ref{sec:posada} where we experiment on the position of the adapters position. The goal of this experiments is that we would like to understand the behaviour of the model compared to the baseline as well as \texttt{zbert}.
 
 \subsubsection{Comparison with BERT baseline and \texttt{zbert}}
 
