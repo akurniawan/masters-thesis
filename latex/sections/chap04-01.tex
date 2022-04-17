@@ -150,10 +150,10 @@ We can see from Figure \ref{img:shfrndcmp} that the performance of the model tha
     \label{img:shfrndcmp}
 \end{figure}
 
-Since we are relying on the base model with a random set of weights, there is a possibility that our method prone to fallacy that the method only works in a single random seed. To ensure that we perform a robust experiemnt, we repeat the random experiments 10 times with 10 different random seeds $\{42, 438, 87, 555, 492, 252, 843, 561, 734, 194\}$. We can see from the result in Figure \ref{img:rndmseed} that all the random seed performs similarly to one and another.
+Since we are relying on the base model with a random set of weights, there is a possibility that our method prone to fallacy that the method only works in a single random seed. To ensure that we perform a robust experiemnt, we repeat the random experiments 10 times with 10 different random seeds. We can see from the result in Figure \ref{img:rndmseed} that all the random seed performs similarly to one and another.
 
 \begin{figure}[h]
-    {\includegraphics[width=0.95\textwidth]{img/randomshuffled.png}}
+    {\includegraphics[width=0.95\textwidth]{img/adapter_random_multiseed.png}}
     \centering
     \caption{Comparison of different random seed for randomly set weights based models.}
     \label{img:rndmseed}
