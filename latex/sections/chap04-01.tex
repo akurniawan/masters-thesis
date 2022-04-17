@@ -11,7 +11,7 @@ The aim of this Chapter is to understand the impact of pre-trained models when f
     \item Use Transformer architecture with BERT weights as the pre-train weights where the weights are shuffled (\texttt{Pre-trained shuffled})
 \end{itemize}
 
-\section{Experiments setup}
+\section{Experiments Setup}
 \subsection{Language Model}
 \label{ssec:langmodel}
 \subsubsection{Dataset}
@@ -88,19 +88,19 @@ In machine translation experiments, there are several scenarios on which we use 
 \subsubsection{Model}
 We use a sequence-to-sequence architecture described on \cite{vaswani2017attention}. The sequence-to-sequence architecture contains two different components, encoder and decoder. The details and exact figure of this architecture has been described on Chapter 1. The encoder and decoder use the same model and hyperparameters as described in the Section \ref{ssec:langmodel}. The only modification from the original model in language model is in the decoder side. We understand that on the encoder side all the self-attention layer will only refer to the neighbors of theh current layer only for gathering the context. On the other hand, for the decoder, we need further context by including the representation from the eneocder as the extra features. For this reason, an extra layer such as \texttt{cross\_attention} layer is introduced in the decoder and will be trained from scratch for any experiments.
 
-\section{Experiments results}
+\section{Experiments Results}
 This section will discuss the result obtained for machine translation tasks. First, in Section \ref{ssec:adaptcomp}, we conduct the comparative study of using adapters with different scenarios. Second, in Section \ref{ssec:randshuff}, we perform a study by replacing the BERT model with a different BERT version where the weights are shuffled. We continue the study of understanding the adapters behaviour by replacing the pre-trained weights with completely random set of weights and not using the BERT model. Finally, in Section \ref{ssec:randpre}, we perform the experiments to understand the contribution of the total number of sentences used in the pre-training.
 
 \subsection{Adapters Comparison}
 \label{ssec:adaptcomp}
-\subsubsection{Experiment setup and motivation}
+\subsubsection{Experiment Setup and Motivation}
 We are first trying to understand the contribution of adapters by performing the comparison of models that trained and fine-tuned with different size of datasets. The definition of dataset is the same as have already explained on the previous section. There are three different categories of dataset that is used in two different ways:
 \begin{itemize}
     \item Used by baseline model to train the model from scratch
     \item Used for pre-training and later fine-tuned on IWSLT dataset
 \end{itemize}
 
-\subsubsection{Experiment results}
+\subsubsection{Experiment Results}
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/baseline.png}}
     \centering
@@ -136,12 +136,12 @@ To see the impact of including adapters, we compare the result on different size
 
 \subsection{Random and Shuffled Pre-training Weights}
 \label{ssec:randshuff}
-\subsubsection{Experiment setup and motivation}
+\subsubsection{Experiment Setup and Motivation}
 To show to what extent the Adapter approach benefits from the exact pre-trained weights vs. some of their general distribution properties vs. just the network structure, we conduct experiments where we start by shuffling BERT weights. To perform the experiment, we separate the weights initialization into two approaches: 1) We shuffled the weights from a column perspective. This means in all the weights matrices in the BERT network, we shuffled the weights by preserving columns but shuffling their order. 2) We shuffled the weights from both column and row perspectives.
 
 Furthermore, we also conduct experiments where randomly set weights on all base network layers as the pre-training models. During the fine-tuning, we only update the weights of the adapter and keep the rest of the weights intact.
 
-\subsubsection{Experiment results}
+\subsubsection{Experiment Results}
 We can see from Figure \ref{img:shfrndcmp} that the performance of the model that uses random weights as the pre-training model is more stable than the one using shuffled BERT weights. Both of the shuffled BERT models suffer from gradient explosion similar to the IWSLT model we show in the previous section. Although the performance of the random model is still below the baseline model, it is interesting to see that only fine-tuning adapters and the cross-attention layer manage to achieve a reasonable BLEU score, considering that the pre-training models do not contain any meaningful information.
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/randomshuffled.png}}
@@ -161,10 +161,10 @@ Since we are relying on the base model with a random set of weights, there is a 
 
 \subsection{Random Pretraining vs. Out-of-Domain Data}
 \label{ssec:randpre}
-\subsubsection{Experiment setup and motivation}
+\subsubsection{Experiment Setup and Motivation}
 In this experiment, we use the same setup as in the Section \ref{ssec:adaptcomp} and \ref{ssec:randshuff}. Specifically, we are interested to investigate the performance of the random weights model compared to the baseline model. We notice that from the previous experiments, we can gain a reasonable score with the random weights model, in this experiment we are conducting further study the performance relative to the baseline where the models were trained using a mix of WMT and IWSLT. The goal of this comparative study is to understand whether we can gain benefit by only fine-tuning a small number of weights (adapters) vs training the whole transformer model with bigger data size.
 
-\subsubsection{Experiment results}
+\subsubsection{Experiment Results}
 We further analyze the random weights by comparing the result with the best performing, baseline, and transformer models we pre-trained ourselves. From Figure \ref{img:rndbslcmp}, we can see that the performance of the random model achieves a similar result to the baseline model that uses 2 million training sentence pairs.
 This tells us that training the whole models with bigger data does not necessarily improve the model's performance. It may need further tuning to gain benefits of bigger data and bigger model. We can see the result of using random weights as a potential alternative for training the model with small data such as IWSLT.
 While the performance is still far from the baseline that is trained using only IWSLT data, this result shows the base model's structure helps the adapter achieve a meaningful performance with very small weights required for the fine-tuning.
