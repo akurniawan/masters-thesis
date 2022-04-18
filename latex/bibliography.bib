@@ -255,6 +255,41 @@
   pages     = {131--198}
 }
 
+@inproceedings{Kuchaiev2017FactorizationTF,
+  author    = {Oleksii Kuchaiev and
+               Boris Ginsburg},
+  title     = {Factorization tricks for {LSTM} networks},
+  booktitle = {5th International Conference on Learning Representations, {ICLR} 2017,
+               Toulon, France, April 24-26, 2017, Workshop Track Proceedings},
+  publisher = {OpenReview.net},
+  year      = {2017},
+  url       = {https://openreview.net/forum?id=ByxWXyNFg},
+  timestamp = {Thu, 04 Apr 2019 13:20:09 +0200},
+  biburl    = {https://dblp.org/rec/conf/iclr/KuchaievG17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{Shazeer2017OutrageouslyLN,
+  author    = {Noam Shazeer and
+               Azalia Mirhoseini and
+               Krzysztof Maziarz and
+               Andy Davis and
+               Quoc V. Le and
+               Geoffrey E. Hinton and
+               Jeff Dean},
+  title     = {Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts
+               Layer},
+  booktitle = {5th International Conference on Learning Representations, {ICLR} 2017,
+               Toulon, France, April 24-26, 2017, Conference Track Proceedings},
+  publisher = {OpenReview.net},
+  year      = {2017},
+  url       = {https://openreview.net/forum?id=B1ckMDqlg},
+  timestamp = {Thu, 25 Jul 2019 14:25:44 +0200},
+  biburl    = {https://dblp.org/rec/conf/iclr/ShazeerMMDLHD17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+
 @inproceedings{bojar-etal-2017-findings,
   title     = {Findings of the 2017 Conference on Machine Translation ({WMT}17)},
   author    = {Bojar, Ond{\v{r}}ej  and
@@ -304,33 +339,33 @@
 }
 
 @inproceedings{schuster2012japanese,
-  title={Japanese and korean voice search},
-  author={Schuster, Mike and Nakajima, Kaisuke},
-  booktitle={2012 IEEE international conference on acoustics, speech and signal processing (ICASSP)},
-  pages={5149--5152},
-  year={2012},
-  organization={IEEE}
+  title        = {Japanese and korean voice search},
+  author       = {Schuster, Mike and Nakajima, Kaisuke},
+  booktitle    = {2012 IEEE international conference on acoustics, speech and signal processing (ICASSP)},
+  pages        = {5149--5152},
+  year         = {2012},
+  organization = {IEEE}
 }
 
 @inproceedings{pfeiffer-etal-2020-adapterhub,
-    title = "{A}dapter{H}ub: A Framework for Adapting Transformers",
-    author = {Pfeiffer, Jonas  and
-      R{\"u}ckl{\'e}, Andreas  and
-      Poth, Clifton  and
-      Kamath, Aishwarya  and
-      Vuli{\'c}, Ivan  and
-      Ruder, Sebastian  and
-      Cho, Kyunghyun  and
-      Gurevych, Iryna},
-    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
-    month = oct,
-    year = "2020",
-    address = "Online",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.emnlp-demos.7",
-    doi = "10.18653/v1/2020.emnlp-demos.7",
-    pages = "46--54",
-    abstract = "The current modus operandi in NLP involves downloading and fine-tuning pre-trained models consisting of millions or billions of parameters. Storing and sharing such large trained models is expensive, slow, and time-consuming, which impedes progress towards more general and versatile NLP methods that learn from and for many tasks. Adapters{---}small learnt bottleneck layers inserted within each layer of a pre-trained model{---} ameliorate this issue by avoiding full fine-tuning of the entire model. However, sharing and integrating adapter layers is not straightforward. We propose AdapterHub, a framework that allows dynamic {``}stiching-in{''} of pre-trained adapters for different tasks and languages. The framework, built on top of the popular HuggingFace Transformers library, enables extremely easy and quick adaptations of state-of-the-art pre-trained models (e.g., BERT, RoBERTa, XLM-R) across tasks and languages. Downloading, sharing, and training adapters is as seamless as possible using minimal changes to the training scripts and a specialized infrastructure. Our framework enables scalable and easy access to sharing of task-specific models, particularly in low-resource scenarios. AdapterHub includes all recent adapter architectures and can be found at AdapterHub.ml",
+  title     = {{A}dapter{H}ub: A Framework for Adapting Transformers},
+  author    = {Pfeiffer, Jonas  and
+               R{\"u}ckl{\'e}, Andreas  and
+               Poth, Clifton  and
+               Kamath, Aishwarya  and
+               Vuli{\'c}, Ivan  and
+               Ruder, Sebastian  and
+               Cho, Kyunghyun  and
+               Gurevych, Iryna},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations},
+  month     = oct,
+  year      = {2020},
+  address   = {Online},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2020.emnlp-demos.7},
+  doi       = {10.18653/v1/2020.emnlp-demos.7},
+  pages     = {46--54},
+  abstract  = {The current modus operandi in NLP involves downloading and fine-tuning pre-trained models consisting of millions or billions of parameters. Storing and sharing such large trained models is expensive, slow, and time-consuming, which impedes progress towards more general and versatile NLP methods that learn from and for many tasks. Adapters{---}small learnt bottleneck layers inserted within each layer of a pre-trained model{---} ameliorate this issue by avoiding full fine-tuning of the entire model. However, sharing and integrating adapter layers is not straightforward. We propose AdapterHub, a framework that allows dynamic {``}stiching-in{''} of pre-trained adapters for different tasks and languages. The framework, built on top of the popular HuggingFace Transformers library, enables extremely easy and quick adaptations of state-of-the-art pre-trained models (e.g., BERT, RoBERTa, XLM-R) across tasks and languages. Downloading, sharing, and training adapters is as seamless as possible using minimal changes to the training scripts and a specialized infrastructure. Our framework enables scalable and easy access to sharing of task-specific models, particularly in low-resource scenarios. AdapterHub includes all recent adapter architectures and can be found at AdapterHub.ml}
 }
 
 
@@ -342,18 +377,18 @@
 }
 
 @inproceedings{sennrich-etal-2016-neural,
-    title = "Neural Machine Translation of Rare Words with Subword Units",
-    author = "Sennrich, Rico  and
-      Haddow, Barry  and
-      Birch, Alexandra",
-    booktitle = "Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
-    month = aug,
-    year = "2016",
-    address = "Berlin, Germany",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/P16-1162",
-    doi = "10.18653/v1/P16-1162",
-    pages = "1715--1725",
+  title     = {Neural Machine Translation of Rare Words with Subword Units},
+  author    = {Sennrich, Rico  and
+               Haddow, Barry  and
+               Birch, Alexandra},
+  booktitle = {Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  month     = aug,
+  year      = {2016},
+  address   = {Berlin, Germany},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/P16-1162},
+  doi       = {10.18653/v1/P16-1162},
+  pages     = {1715--1725}
 }
 
 

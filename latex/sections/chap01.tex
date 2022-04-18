@@ -23,7 +23,7 @@ While NMT has been the primary technique used in various MT challenges, such as 
 
     \item NMT requires a large amount of data. It is problematic when low-resource languages are involved in the evaluation.
 
-    \item NMT does not perform well in low-frequency words. PBMT performance suffers when low-frequency words occur in the sentence. It is especially true when the word is entirely unknown. Although NMT is better performed in low-frequency words, the problem is not yet solved. The NMT models also show weakness in translating low-frequency words from the experiments.
+    \item PBMT performance suffers when low-frequency words occur in the sentence. It is especially true when the word is entirely unknown. Although NMT is better performed in low-frequency words, the problem is not yet solved. The NMT models also show weakness in translating low-frequency words from the experiments.
 
     \item Difficulties in translating long sentences. NMT can perform well in short sentences up to 60 words. However, longer sentences show a lower quality of translation.
 
@@ -42,13 +42,13 @@ The following sections show a quick overview of recent NMT models. They include 
 The first seq2seq model that employs RNN as the fundamental architecture is proposed by \cite{sutskever2014sequence}. This is a straightforward extension of language model problem. Essentially, the model sequentially predicts the next word given all previous words.
 
 In MT, the approach is modified by using two similar model architectures for language $S$ and $T$. For language $S$ we call this component \texttt{encoder} and for $T$ we call it \texttt{decoder}.
-The task of \texttt{encoder} is to produce a vector representation of the input sentence from source language $x \in S$. We define the input sentence as a sequence of tokens from a fixed set of vocabulary $x \in S$ transformed by an embedding matrix containing dense representation. An RNN is then used to process these representations. This results in a new representation for each token encoded by hidden states in RNN. This representation can be thought of as a combination of features from the token and its context.
-\texttt{decoder} has a similar functionality as \texttt{encoder} where it uses a sequence of tokens from $y \in T$ as its inputs. \texttt{decoder} leverage additional features from \texttt{encoder} by incorporating the output vector of \texttt{encoder}. The output vector from \texttt{encoder} represents the final token of the sentence. For further illustration, we refer to Image \ref{img:rnnseq2seq}.
+The task of the \texttt{encoder} is to produce a vector representation of the input sentence from source language $x \in S$. We define the input sentence as a sequence of tokens from a fixed set of vocabulary $x \in S$ transformed by an embedding matrix containing dense representation. An RNN is then used to process these representations. This results in a new representation for each token encoded by hidden states in RNN. This representation can be thought of as a combination of features from the token and its context.
+\texttt{decoder} has a similar functionality as the \texttt{encoder} where it uses a sequence of tokens from $y \in T$ as its inputs. The \texttt{decoder} leverage additional features from the \texttt{encoder} by incorporating the output vector of the \texttt{encoder}. The output vector from the \texttt{encoder} represents the final token of the sentence. For further illustration, we refer to Image \ref{img:rnnseq2seq}.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/rnnseq2seq.png}}
     \centering
-    \caption{Illustration of seq2seq architecture. Figure reprinted from \protect\url{https://www.guru99.com/seq2seq-model.html}.}
+    \caption{Illustration of seq2seq architecture.\footnote{Figure reprinted from \protect\url{https://www.guru99.com/seq2seq-model.html}.}}
     \label{img:rnnseq2seq}
 \end{figure}
 
@@ -62,7 +62,7 @@ An extension of the encoder-decoder model is proposed by jointly learning to tra
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/attseq2seq.png}}
     \centering
-    \caption{Illustration of seq2seq architecture with attention. Figure reprinted from \protect\url{https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html}.}
+    \caption{Illustration of seq2seq architecture with attention.\footnote{Figure reprinted from \protect\url{https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html}.}}
     \label{img:attseq2seq}
 \end{figure}
 
@@ -74,7 +74,7 @@ The proposed approach achieves significantly better translation performance than
 The motivation for this work is to identify the association between the decoder state and the input word. This attention method wants to measure the impact of words representation in the source sentence by looking at the strength of this association to produce the subsequent output word.
 
 \subsection{Transformer}
-Recurrent models such as RNN usually compute each token symbol of the input and produce and input sequentially. During these sequential computations, they generate hidden states $h_t$ as a representation of the current position $t$. These hidden states take into consideration a combination of current input and the previous hidden states $h_{t-1}$. This behaviour implicitly forces the network to behave in a sequential manner and prevent parallelization within the training procedure. This parallelization becomes very important as the length of the input grows. Several works have achieved notable improvements in reducing the computational time. However, it does not change the fact that the inherent sequential nature of the model remains.
+Recurrent models such as RNN usually compute each token symbol of the input and produce and input sequentially. During these sequential computations, they generate hidden states $h_t$ as a representation of the current position $t$. These hidden states take into consideration a combination of current input and the previous hidden states $h_{t-1}$. This behaviour implicitly forces the network to behave in a sequential manner and prevent parallelization within the training procedure. This parallelization becomes very important as the length of the input grows. Several works through factorization tricks \cite{Kuchaiev2017FactorizationTF} and conditional computation \cite{Shazeer2017OutrageouslyLN} have achieved notable improvements in reducing the computational time. However, it does not change the fact that the inherent sequential nature of the model remains.
 
 To alleviate the sequential problem, \cite{vaswani2017attention} propose a new architecture called transformer. This new architecture avoids the recurrent nature of RNN entirely and only relies on an attention mechanism to provide dependencies between input and output. It allows more parallelization and reduces significant training time to achieve a new state of the art in several tasks. MT is one of them.
 
@@ -141,7 +141,7 @@ Sequential transfer learning is a form of transfer learning that has led to the 
 
 In NLP, one of the most prominent examples of sequential transfer learning is language model pre-training. Language model pre-training has been shown as an effective objective to improve many NLP tasks (\cite{Dai2015SemisupervisedSL,Peters2018DeepCW,Radford2018ImprovingLU,Howard2018UniversalLM}). These include sentence-level tasks in natural language understanding (NLU) such as natural language inference (\cite{Bowman2015ALA,Williams2018ABC}) and sentence paraphrasing \cite{Dolan2005AutomaticallyCA}. It also has been shown to improve performance in token-level tasks where models are expected to output another token, such as named entity recognition, question answering, and machine translation (\cite{Sang2003IntroductionTT,Rajpurkar2016SQuAD1Q}). In machine translation, the availability of high-quality parallel data can be a limitation to training good NMT models that can generate good output. Contextual knowledge such as the one from pre-trained models could be a good complement for NMT.
 
-Although the language model task looks straightforward from a high-level overview, it is challenging for both machines and humans. For models to provide a solution, they must understand low-level linguistics phenomena such as syntax, semantics, and particular knowledge about the world. It has been shown that given enough data, enough computational power, and a large number of parameters; a model can provide a reasonable output \cite{radford2018improving}. Several works have shown, empirically, that language modelling performs better than other pre-training tasks such as translation or autoencoding \cite{Zhang2018LanguageMT,Wang2019CanYT}.
+Although the language model task looks straightforward from a high-level overview, it is challenging for both machines and humans. For models to provide a solution, they must understand certain phenomena such as syntax, semantics, and particular knowledge about the world. It has been shown that given enough data, enough computational power, and a large number of parameters; a model can provide a reasonable output \cite{radford2018improving}. Several works have shown, empirically, that language modelling performs better than other pre-training tasks such as translation or autoencoding \cite{Zhang2018LanguageMT,Wang2019CanYT}.
 
 Based on \cite{ruder2019transfer}, there are two existing strategies for applying pre-trained representations: feature-based and fine-tuning. The feature-based approach works by incorporating the representation as an additional feature to the models in the downstream tasks. The example of this approach can be seen in ELMo \cite{Peters2018DeepCW}. On the other hand, the fine-tuning approach employs the previously trained weights on the same model architecture in the downstream tasks. Several works show fine-tuning provides a significant improvement, such as BERT \cite{devlin2018bert} and OpenAI GPT \cite{Radford2018ImprovingLU}. We only consider the fine-tuning approach to train our model for this thesis.
 
@@ -185,7 +185,7 @@ There are several problems in fine-tuning that adapters are trying to solve:
     \item The sensitivity to both hyper-parameter and over-fitting are intensified in the high capacity model.
 \end{itemize}
 
-\cite{han2021robust} shows that fixing the pre-trained layers and only fine-tune adapter modules improve the model's performance stability on various random seeds, enhance adversarial robustness, as well as better transfer learning performance.
+\cite{han2021robust} shows that fixing the pre-trained layers and only fine-tune adapter modules improve the model's performance stability on various random seeds, enhance adversarial robustness, as well as better transfer learning performance. We can see from \cref{img:adapters_instability} the difference between models that were trained with (cluster on the right) and without adapters (cluster on the left) on different pre-training and fine-tuning iteration. The models that fine-tuned with adapters show more robustness towards variety of different pre-training models compared to the ont that were not using adapters.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapters_instability.png}}
