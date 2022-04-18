@@ -25,13 +25,13 @@ In this Chapter, we continue the study from previous Chapter to understand more 
     \label{tab:hyp_invest}
 \end{table}
 
-As we mentioned on tkhe beginning of the chapter, we have several scenario we use to conduct the experiments. Despite various possibilities of different setup, here we describe variables that we fixed throughout the experiments. As we have mentioned on Chapter \label{chap:03}, we use Huggingface as our main framework with added modification for adapters. In contrary to Chapter \label{chap:adaptmt}, we do not investigate language models that we train ourselves, but instead, we focus mainly on BERT language model. We use the same hyperparameters to Chapter \label{chap:03} which we describe on Table \ref{tab:hyp_invest}.
+As we mentioned on tkhe beginning of the chapter, we have several scenario we use to conduct the experiments. Despite various possibilities of different setup, here we describe variables that we fixed throughout the experiments. As we have mentioned on Chapter \ref{chap:03}, we use Huggingface as our main framework with added modification for adapters. In contrary to Chapter \ref{chap:adaptmt}, we do not investigate language models that we train ourselves, but instead, we focus mainly on BERT language model. We use the same hyperparameters to Chapter \ref{chap:03} which we describe on Table \ref{tab:hyp_invest}.
 
 The model and hyperparameters that we use throughout the experiment remain the same as described on Chapter \ref{chap:adaptmt}. We use transformer model with sequence-to-sequence architecture and we follow BERT-based configuration to initialize both the encoder and the decoder.
 
 
 \subsection{Dataset}
-As mentioned on the previous Section, in this experiment we no longer focus on the language model and instead we focus mainly on the machine translation. We have already described on Chapter \label{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we use focus solely on IWSLT to fine-tune and evaluate our models.
+As mentioned on the previous Section, in this experiment we no longer focus on the language model and instead we focus mainly on the machine translation. We have already described on Chapter \ref{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we use focus solely on IWSLT to fine-tune and evaluate our models.
 
 
 \section{Original BERT}
@@ -131,7 +131,7 @@ We first compare the \texttt{zbert} model without adapters and only fine-tuning 
     \centering
     \caption{Comparison between baseline BERT model and baseline \texttt{zbert} models.}
     \label{img:baseline_zbert}
-\end{figure}
+\end{figure}1
 
 \begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/adapter_zbert.png}}
