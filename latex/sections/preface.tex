@@ -1,6 +1,5 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
-
 Pre-trained language models \cite{devlin2018bert,howard2018universal} have received considerable attention in recent years. These models are trained on large scale corpora and then fine-tuned for a particular downstream task. This method allows pre-trained models to perform well across a range of natural language processing tasks. One of the most successful models is BERT \cite{devlin2018bert}. BERT has been most extensively used for common Natural Language Understanding (NLU) tasks. It has been shown that BERT can achieve great performance with relatively straightforward fine-tuning, especially for classification-like tasks.
 
 For natural language generation (NLG), incorporating BERT is still challenging. According to \citet{zhu2020incorporating}, simply incorporating BERT into the encoder side of the seq2seq architecture can hurt the performance. On the decoder side, BERT does not quite fit either because the bidirectional nature of the model was significantly different from the conditional language model (predicting the next word) objective we are aiming for.
@@ -9,23 +8,23 @@ Fine-tuning all BERT's parameters is inefficient given that there are $\pm$200 m
 
 Adapters are an alternative approach that allows for fine-tuning a model without altering the original network \cite{houlsby2019parameter,bapna2019simple}. By leveraging adapters, one can reduce the number of updated parameters in fine-tuning and make the process computationally less expensive while achieving similar results. Another useful property of the approach with adapters is that they are more robust against catastrophic forgetting than fine-tuning \cite{han2021robust}.
 
-In this work, we use BERT and its variants as the base pre-trained models and we fine-tune them with adapters. We evaluate the models on machine translation with the following objectives:
+In this work, we use BERT and its variants as the base pre-trained models and fine-tune them with adapters. We evaluate the models on machine translation with the following objectives:
 \begin{itemize}
     \item We conduct a study to understand the contribution of good representation in the pre-training language model to the adapters during the fine-tuning.
-    \item We conduct a study to evaluate the effectiveness of adapters in seq2seq framework by putting them only in the encoder or the decoder.
-    \item We experiment with down-scaling the pre-trained model size and try to recover the performance so that it is comparable to the full-sized model.
+    \item We conduct a study to evaluate the effectiveness of adapters in the seq2seq framework by putting them only in the encoder or the decoder.
+    \item We experiment with down-scaling the pre-trained model size and try to recover the performance to be comparable to the full-sized model.
 \end{itemize}
 
 \section*{Thesis Organization}
 
 \paragraph{Chapter 1} discusses the theoretical background of machine translation, transfer learning, and a brief overview of the current state of using adapters in various setups.
 
-\paragraph{Chapter 2} reviews the previous related works of transfer learning from models that were pre-trained on language models objectives and the usage of adapters in various disciplines within text and speech domains.
+\paragraph{Chapter 2} reviews the previous related works of transfer learning from models that were pre-trained on language model objectives and the usage of adapters in various disciplines within text and speech domains.
 
-\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then continue by explaining the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework that we use for the experiment as well as the automatic evaluation metric.
+\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then explain the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework that we use for the experiment and the automatic evaluation metric.
 
 \paragraph{Chapter 4} presents our attempt to use adapters in machine translation setup. In this experiment, we mainly focus on the contribution of the pre-training representation during fine-tuning with adapters in machine translation.
 
-\paragraph{Chapter 5} presents our attempt in understanding adapters effectiveness by placing the adapters in either the encoder or decoder. We then continue the experiments by down-scaling BERT to half of the size and try to recover the performance with adapter so that it is comparable to the full-sized model.
+\paragraph{Chapter 5} presents our attempt to understand adapters' effectiveness by placing the adapters in either the encoder or decoder. We then continue the experiments by down-scaling BERT to half of the size and trying to recover the adapter's performance so that it is comparable to the full-sized model.
 
 \paragraph{Conclusion} summarizes our findings from the experiments.
