@@ -54,7 +54,7 @@ The task of the \texttt{encoder} is to produce a vector representation of the in
 
 \cite{cho2014properties} found several disadvantages of using this variant of seq2seq framework as they found that the models' performance decreased when the length of the source sentence increased.
 From the previous paragraph, we recall that the \texttt{decoder} only uses the last vector of \texttt{encoder} as the additional feature.
-The vector is a fixed-size vector whose size is defined prior to the training. Hence, the vector could be less informative when the source sentence grows due to the missing information that it has to sacrifice during the encoding. In essence, this framework forces the \textt{encoder} to create a good representation by combining the features from all the words in the source sentence within a single vector with a limited size.
+The vector is a fixed-size vector whose size is defined prior to the training. Hence, the vector could be less informative when the source sentence grows due to the missing information that it has to sacrifice during the encoding. In essence, this framework forces the \texttt{encoder} to create a good representation by combining the features from all the words in the source sentence within a single vector with a limited size.
 
 \footnotetext[1]{Figure reprinted from \protect\url{https://www.guru99.com/seq2seq-model.html}.}
 
