@@ -9,23 +9,23 @@
 \makeatletter
 \def\@makechapterhead#1{
   {\parindent \z@ \raggedright \normalfont
-   \Huge\bfseries \thechapter. #1
-   \par\nobreak
-   \vskip 20\p@
-}}
+      \Huge\bfseries \thechapter. #1
+      \par\nobreak
+      \vskip 20\p@
+    }}
 \def\@makeschapterhead#1{
   {\parindent \z@ \raggedright \normalfont
-   \Huge\bfseries #1
-   \par\nobreak
-   \vskip 20\p@
-}}
+      \Huge\bfseries #1
+      \par\nobreak
+      \vskip 20\p@
+    }}
 \makeatother
 
 % This macro defines a chapter, which is not numbered, but is included
 % in the table of contents.
 \def\chapwithtoc#1{
-\chapter*{#1}
-\addcontentsline{toc}{chapter}{#1}
+  \chapter*{#1}
+  \addcontentsline{toc}{chapter}{#1}
 }
 
 % Draw black "slugs" whenever a line overflows, so that we can spot it easily.
@@ -52,8 +52,8 @@
   \par\medskip\noindent
   \textit{Proof}.
 }{
-\newline
-\rightline{$\qedsymbol$}
+  \newline
+  \rightline{$\qedsymbol$}
 }
 
 %%% An environment for typesetting of program code and input/output
@@ -85,3 +85,10 @@
 %%% Various table goodies
 \newcommand{\pulrad}[1]{\raisebox{1.5ex}[0pt]{#1}}
 \newcommand{\mc}[1]{\multicolumn{1}{c}{#1}}
+
+% \def\XXX#1{\textcolor{red}{XXX #1}}
+% \def\repl#1#2{\textcolor{red}{\sout{#1}}\textcolor{blue}{\uline{#2}}}
+% \def\repl#1#2{#2}
+
+\def\normcite#1{\cite{#1}}
+\def\citewithpar#1{(\cite{#1})}
