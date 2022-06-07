@@ -29,54 +29,29 @@ To pre-train the model, we follow the work from \cite{devlin2018bert} by using M
     \label{img:mlmobj}
 \end{figure}
 
-We use the default BERT configuration from huggingface to construct the model. A complete list of the hyperparameters can be found on Table \ref{tab:hyp_en} and \ref{tab:hyp_de}.
+We use the default BERT configuration from huggingface to construct the model. A complete list of the hyperparameters can be found on \cref{tab:hyp}.
 
 \begin{table}[]
-    \centering
-    \begin{tabular}{@{}ccc@{}}
+    \begin{tabular}{@{}lccc@{}}
         \toprule
-        \textbf{Name}                            & \textbf{Value} & \textbf{Description}                                                                 \\ \midrule
-        \textbf{vocab\_size}                     & 30522          & \begin{tabular}[c]{@{}c@{}}Vocabulary size of the\\ BERT model\end{tabular}          \\
-        \textbf{hidden\_size}                    & 768            & \begin{tabular}[c]{@{}c@{}}Dimensionality for each\\ of the layers\end{tabular}      \\
-        \textbf{num\_hidden\_layers}             & 12             & \begin{tabular}[c]{@{}c@{}}Number of hidden layers\\ in the transformer\end{tabular} \\
-        \textbf{num\_attention\_heads}           &
-        12                                       &
-        \begin{tabular}[c]{@{}c@{}}Number of attention heads for\\ each attention layer\end{tabular}                                                     \\
-        \textbf{intermediate\_size}              & 3072           & \begin{tabular}[c]{@{}c@{}}Dimensionality of the\\ feed-forward layer\end{tabular}   \\
-        \textbf{hidden\_act}                     & "gelu"         & \begin{tabular}[c]{@{}c@{}}The activation function\\ within the layer\end{tabular}   \\
-        \textbf{hidden\_dropout\_prob}           &
-        0.1                                      &
-        \begin{tabular}[c]{@{}c@{}}The dropout probability\\ for all fully connected layers in\\ the embeddings, encoder,\\ and pooler\end{tabular}      \\
-        \textbf{attention\_probs\_dropout\_prob} &
-        0.1                                      &
-        \begin{tabular}[c]{@{}c@{}}The dropout ratio for the\\ attention probabilities\end{tabular}                                                      \\ \bottomrule
+        \textbf{Name}                   & \textbf{En} & \textbf{De} & \textbf{Description}                                                                         \\ \midrule
+        vocab\_size                     & 30522       & 31102       & \begin{tabular}[c]{@{}c@{}}Vocabulary size of the\\ BERT model\end{tabular}                  \\
+        hidden\_size                    & 768         & 768         & \begin{tabular}[c]{@{}c@{}}Dimensionality for each\\ of the layers\end{tabular}              \\
+        num\_hidden\_layers             & 12          & 12          & \begin{tabular}[c]{@{}c@{}}Number of hidden layers\\ in the transformer\end{tabular}         \\
+        num\_attention\_heads           & 12          & 12          & \begin{tabular}[c]{@{}c@{}}Number of attention heads for\\ each attention layer\end{tabular} \\
+        intermediate\_size              & 3072        & 3072        & \begin{tabular}[c]{@{}c@{}}Dimensionality of the\\ feed-forward layer\end{tabular}           \\
+        hidden\_act                     & gelu        & gelu        & \begin{tabular}[c]{@{}c@{}}The activation function\\ within the layer\end{tabular}           \\
+        hidden\_dropout\_prob           &
+        0.1                             &
+        0.1                             &
+        \begin{tabular}[c]{@{}c@{}}The dropout probability\\ for all fully connected layers in\\ the embeddings, encoder,\\ and pooler\end{tabular}                \\
+        attention\_probs\_dropout\_prob &
+        0.1                             &
+        0.1                             &
+        \begin{tabular}[c]{@{}c@{}}The dropout ratio for the\\ attention probabilities\end{tabular}                                                                \\ \bottomrule
     \end{tabular}
-    \caption{Transformer parameter for English based on \texttt{bert-base-uncased}}
-    \label{tab:hyp_en}
-\end{table}
-
-\begin{table}[]
-    \centering
-    \begin{tabular}{@{}ccc@{}}
-        \toprule
-        \textbf{Name}                            & \textbf{Value} & \textbf{Description}                                                                 \\ \midrule
-        \textbf{vocab\_size}                     & 31102          & \begin{tabular}[c]{@{}c@{}}Vocabulary size of the\\ BERT model\end{tabular}          \\
-        \textbf{hidden\_size}                    & 768            & \begin{tabular}[c]{@{}c@{}}Dimensionality for each\\ of the layers\end{tabular}      \\
-        \textbf{num\_hidden\_layers}             & 12             & \begin{tabular}[c]{@{}c@{}}Number of hidden layers\\ in the transformer\end{tabular} \\
-        \textbf{num\_attention\_heads}           &
-        12                                       &
-        \begin{tabular}[c]{@{}c@{}}Number of attention heads for\\ each attention layer\end{tabular}                                                     \\
-        \textbf{intermediate\_size}              & 3072           & \begin{tabular}[c]{@{}c@{}}Dimensionality of the\\ feed-forward layer\end{tabular}   \\
-        \textbf{hidden\_act}                     & "gelu"         & \begin{tabular}[c]{@{}c@{}}The activation function\\ within the layer\end{tabular}   \\
-        \textbf{hidden\_dropout\_prob}           &
-        0.1                                      &
-        \begin{tabular}[c]{@{}c@{}}The dropout probability\\ for all fully connected layers in\\ the embeddings, encoder,\\ and pooler\end{tabular}      \\
-        \textbf{attention\_probs\_dropout\_prob} &
-        0.1                                      &
-        \begin{tabular}[c]{@{}c@{}}The dropout ratio for the\\ attention probabilities\end{tabular}                                                      \\ \bottomrule
-    \end{tabular}
-    \caption{Transformer parameter for German based on \texttt{bert-base-german-dbmdz-uncased}.}
-    \label{tab:hyp_de}
+    \caption{Transformer parameter for English based on \texttt{bert-base-uncased} German based on \texttt{bert-base-german-dbmdz-uncased}}
+    \label{tab:hyp}
 \end{table}
 
 We train the model until convergence. The definition of convergence in our case for MLM objective is to train the model until the validation loss is no longer improving. Each languages with different number of volumes may end up converging in different steps.

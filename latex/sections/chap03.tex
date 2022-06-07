@@ -2,59 +2,62 @@
 
 \chapter{Experiment Setup}
 \label{chap:03}
-In this chapter we describe our selection of dataset, framework, and automatic evaluation we used for the experiments. We start by describing a set of dataset as well as the tokenization that we use in Section \ref{sec:dataset} as well as our reasoning on choosing the dataset. We then move forward to the framework we use to implement the neural network, training, and evaluation phase in Section \ref{sec:framework}. Finally, we will discuss automatic evaluation we use during the experiments in Section \ref{sec:aeval}.
+In this chapter we describe our selection of dataset, framework, and automatic evaluation we used for the experiments. We start by describing our reasoning in choosing the dataset, our set of training and test data, and the tokenization that we used in \cref{sec:dataset}. We then move forward to the framework we use to implement the neural network, training, and evaluation phase in \cref{sec:framework}. Finally, we discuss automatic evaluation we use during the experiments in  \cref{sec:aeval}.
 
 \section{German-to-English Dataset}
 \label{sec:dataset}
-The scope of our experiment is in a single language pair German$\rightarrow$English. We only select a single language pair as we want to focus our experiment on understanding the behaviour of BERT and the adapters in machine translation and not focusing on generalization in multiple language pairs. We select IWSLT14 and WMT19 as our primary dataset. IWSLT14 will be mainly used as the dataset for fine-tuning and testing the final performance of the model, while WMT19 is used for the additional dataset in pre-training as well as normal training in some of our baselines.
+The scope of our experiment is in a single language pair German$\rightarrow$English. We only select a single language pair because we want to focus our experiment on understanding the behaviour of BERT and the adapters in machine translation and not in generalization for multiple language pairs. We select IWSLT14 and WMT19 as our primary dataset. IWSLT14 will be mainly used as the dataset for fine-tuning and testing the final performance of the model, while WMT19 is used for the additional dataset in pre-training as well as normal training in some of our baselines.
 
 \subsection{IWSLT 2014}
-The 2014 IWSLT evaluation \cite{Cettolo2014ReportOT} is a shared task started in 2010. This task is mainly focusing on the translation of TED Talks. It consists of public speech collections that cover various topics. All the collections in TED talks have English captions. These captions are then translated into many languages by various volunteers worldwide. As TED talks are recorded events of speakers sharing their thoughts and experience, this implies that in order to translate the captions, we also need to deal with spoken language rather than written language. Spoken language is expected to be less complex and formal than written language.
+The 2014 IWSLT evaluation \cite{Cettolo2014ReportOT} is the fourth instance of a shared task started in 2010. This task is mainly focusing on the translation of TED Talks. The task is based on a collection of public speech that cover various topics. All the talks in the collections have English captions. These captions are then translated into many languages by various volunteers worldwide. As TED talks are recorded events of speakers sharing their thoughts and experience, we  need to deal with spoken language rather than written language. Spoken language is expected to be less complex and formal than written language.
 
-% In this shared tasks, there is a required for tight integration between machine translation and automatic speech recognition task as the translation needs to be done either in offline
-% From an application perspective, TED Talks suggest translation tasks ranging from off-line translation of written captions, up to on-line speech translation, requiring a tight integration of MT with ASR possibly handling stream-based processing.
-Both the in-domain training and development data are available through the website of WIT3\footnote{\url{https://wit3.fbk.eu/}}. There is also out-of-domain training data available, but it will be provided through the workshop website. In this work, we focus only on the in-domain training data and ignore the out-of-domain data. The evaluation dataset (tst2014) comprises talks from the previous year, and the 2014 talks are included in the training sets. Furthermore, to improve the reliability of assessing the MT progress over the years, evaluation sets from previous years (tst2013) are also distributed together with tst2014. On the other hand, development sets (dev2010, tst2010, tst2011, and tst2012) are kept intact from the past editions for languages that have already existed.
+Both the in-domain training and development data are available through the website of WIT3.\footnote{\url{https://wit3.fbk.eu/}} There is also out-of-domain training data that is provided through the workshop website. In this work, we focus only on the in-domain training data and ignore the out-of-domain data. The evaluation dataset (tst2014) comprises talks from the previous years, and the 2014 talks are included in the training sets. Furthermore, to improve the reliability of assessing the MT progress over the years, evaluation sets from previous years (tst2013) are also distributed together with tst2014. On the other hand, development sets (dev2010, tst2010, tst2011, and tst2012) are kept intact from the past editions.
 
-Evaluation sets tst2014 for the German language (De$\rightarrow$En) derived from the ASR task. Therefore, it is ensured that no overlap exists with other tasks that employ TED talks. In addition to the TED talk, there is a series of independent talks called TEDx. The difference lies in the location of the events. TED talk mainly focuses on the North American region, while TEDx can be held in various areas worldwide. To put more rigour in evaluating the model, TEDx based corpus was proposed in 2013 for De$\rightarrow$En as the progressive test set. Finally, a concatenation of the TEDx and TED based development set was released. It consists of dev2010, tst2010, tst2011 and tst2012 sets. The full statistics of the dataset can be seen on \ref{tab:iwslt14stat}.
+Evaluation sets tst2014 for the German language (De$\rightarrow$En) are derived from the ASR task. Therefore, it is ensured that no overlap exists with other tasks that employ TED talks. In addition to the TED talks, there is a series of independent talks called TEDx. The difference lies in the location of the events. TED talks mainly focus on the North American region, while TEDx can be held in various areas worldwide. To put more rigour in evaluating the model, TEDx based corpus was proposed in 2013 for De$\rightarrow$En as the progressive test set. Finally, a concatenation of the TEDx and TED based development set was released. It consists of dev2010, tst2010, tst2011 and tst2012 sets. The full statistics of the dataset can be seen on \cref{tab:iwslt14stat}.
 
 \begin{table}[h]
     \centering
     \begin{tabular}{@{}cclll@{}}
         \toprule
-        \multicolumn{2}{c}{\multirow{2}{*}{\textbf{set}}} & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{sent}}} & \multicolumn{2}{c}{\textbf{tokens}}                                           \\ %\cmidrule(l){4-5}
-        \multicolumn{2}{c}{}                              & \multicolumn{1}{c}{}                               & \multicolumn{1}{c}{\textbf{En}}     & \multicolumn{1}{c}{\textbf{De}}         \\ \toprule
-        \multicolumn{2}{c}{train}                         & 172k                                               & 3.46M                               & 3.24M                                   \\ \midrule
-        \multirow{4}{*}{dev}                              & TED.dev2010                                        & 887                                 & 20,1k                           & 19,1k \\
-                                                          & TED.tst2010                                        & 1,565                               & 32,0k                           & 30,3k \\
-                                                          & TED.tst2011                                        & 1,433                               & 26,9k                           & 26,3k \\
-                                                          & TED.tst2012                                        & 1,700                               & 30,7k                           & 29,2k \\ \midrule
-        \multirow{5}{*}{test}                             & TED.tst2013                                        & 993                                 & 20,9k                           & 19,7k \\
-                                                          & TED.tst2014                                        & 1,305                               & 24,8k                           & 23,8k \\
-                                                          & TEDx.dev2012                                       & 1,165                               & 21,6k                           & 20,8k \\
-                                                          & TEDx.tst2013                                       & 1,363                               & 23,3k                           & 22,4k \\
-                                                          & TEDx.tst2014                                       & 1,414                               & 28,1k                           & 27,6k \\ \bottomrule
+        \multicolumn{2}{c}{\multirow{2}{*}{\textbf{set}}} & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{sentences}}} & \multicolumn{2}{c}{\textbf{tokens}}                                           \\ %\cmidrule(l){4-5}
+        \multicolumn{2}{c}{}                              & \multicolumn{1}{c}{}                                    & \multicolumn{1}{c}{\textbf{En}}     & \multicolumn{1}{c}{\textbf{De}}         \\ \toprule
+        \multicolumn{2}{c}{train}                         & 172k                                                    & 3.46M                               & 3.24M                                   \\ \midrule
+        \multirow{4}{*}{dev}                              & TED.dev2010                                             & 887                                 & 20,1k                           & 19,1k \\
+                                                          & TED.tst2010                                             & 1,565                               & 32,0k                           & 30,3k \\
+                                                          & TED.tst2011                                             & 1,433                               & 26,9k                           & 26,3k \\
+                                                          & TED.tst2012                                             & 1,700                               & 30,7k                           & 29,2k \\ \midrule
+        \multirow{5}{*}{test}                             & TED.tst2013                                             & 993                                 & 20,9k                           & 19,7k \\
+                                                          & TED.tst2014                                             & 1,305                               & 24,8k                           & 23,8k \\
+                                                          & TEDx.dev2012                                            & 1,165                               & 21,6k                           & 20,8k \\
+                                                          & TEDx.tst2013                                            & 1,363                               & 23,3k                           & 22,4k \\
+                                                          & TEDx.tst2014                                            & 1,414                               & 28,1k                           & 27,6k \\ \bottomrule
     \end{tabular}
     \caption{Statistics of IWSLT 2014 German$\rightarrow$English dataset.}
     \label{tab:iwslt14stat}
 \end{table}
 
 \subsection{WMT 2019}
-WMT19 dataset was first introduced in The Fourth Conference on Machine Translation (WMT) held at ACL 2019 \cite{barrault-etal-2019-findings}. There are various shared tasks within the conference that evaluates different aspects of machine translation. The primary objectives of this conference are evaluating machine translation's state of the art, to enable publicity of the performance as well as the common test sets, and to improve the methods to evaluate and estimate in machine translation. This conference has been conducted 13 times and the current conference is built on top of the previous editions (\cite{koehn-monz-2006-manual}; \cite{callison-burch-etal-2007-meta}, \cite{callison-burch-etal-2008-meta}, \cite{callison-burch-etal-2009-findings}, \cite{callison-burch-etal-2010-findings}, \cite{callison-burch-etal-2011-findings}, \cite{callison-burch-etal-2012-findings}; \cite{bojar-etal-2013-findings}, \cite{bojar-etal-2014-findings}, \cite{bojar-etal-2015-findings}, \cite{bojar-etal-2016-findings}, \cite{bojar-etal-2017-findings}, \cite{bojar-etal-2018-findings}).
+WMT19 dataset was first introduced in The Fourth Conference on Machine Translation (WMT) held at ACL 2019 \cite{barrault-etal-2019-findings}. The primary objectives of this conference are to evaluate state of the art in MT, enable publicity of the performance and the common test sets, and improve the methods to evaluate and estimate machine translation. There are various shared tasks within the conference that evaluate different machine translation aspects. This conference has been conducted 13 times and the current conference is built on top of the previous editions (\cite{koehn-monz-2006-manual}; \cite{callison-burch-etal-2007-meta}, \cite{callison-burch-etal-2008-meta}, \cite{callison-burch-etal-2009-findings}, \cite{callison-burch-etal-2010-findings}, \cite{callison-burch-etal-2011-findings}, \cite{callison-burch-etal-2012-findings}; \cite{bojar-etal-2013-findings}, \cite{bojar-etal-2014-findings}, \cite{bojar-etal-2015-findings}, \cite{bojar-etal-2016-findings}, \cite{bojar-etal-2017-findings}, \cite{bojar-etal-2018-findings}).
 
-The dataset was collected from various news sources on the internet. As mentioned before, we use WMT for a pre-training dataset and an additional dataset to train our baseline models. For this reason, we are not utilizing the dev and test set. Therefore, we show the statistics of the dataset in Table \ref{tab:wmt19stat} only for the training set. Apart from a large number of sentences, another reason for choosing WMT19 as our additional dataset is that it contains sentence pairs from various domains.
+The dataset was collected from various news sources on the Internet. As mentioned before, we use WMT for a pre-training dataset and an additional dataset to train our baseline models. For this reason, we are not utilizing the dev and test set. Therefore, we show the statistics of the dataset in \cref{tab:wmt19stat} only for the training set. Apart from a large number of sentences, another reason for choosing WMT19 as our additional dataset is that it contains sentence pairs from various domains.
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{@{}clll@{}}
+    \begin{tabular}{@{}llll@{}}
         \toprule
-        \multirow{2}{*}{\textbf{corpus}} & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{sent}}} & \multicolumn{2}{c}{\textbf{tokens}}                                   \\
-                                         & \multicolumn{1}{c}{}                               & \multicolumn{1}{c}{\textbf{De}}     & \multicolumn{1}{c}{\textbf{En}} \\ \midrule
-        Europarl Parallel Corpus         & 1,825,741                                          & 48,125,049                          & 50,506,042                      \\
-        News Commentary Parallel Corpus  & 329,506                                            & 8,363,213                           & 8,295,418                       \\
-        Common Crawl Parallel Corpus     & 2,399,123                                          & 54,575,405                          & 58,870,638                      \\
-        ParaCrawl Parallel Corpus        & 31,358,551                                         & 559,348,288                         & 598,362,329                     \\
-        EU Press Release Parallel Corpus & 1,480,789                                          & 29,458,773                          & 30,097,541                      \\
-        WikiTitles Parallel Corpus       & 1,305,135                                          & 2,817,660                           & 3,271,223                       \\ \bottomrule
+        \multicolumn{1}{c}{\multirow{2}{*}{\textbf{corpus}}} &
+        \multicolumn{1}{c}{\multirow{2}{*}{\textbf{sent}}}   &
+        \multicolumn{2}{c}{\textbf{tokens}}                                            \\
+        \multicolumn{1}{c}{}                                 &
+        \multicolumn{1}{c}{}                                 &
+        \multicolumn{1}{c}{\textbf{De}}                      &
+        \multicolumn{1}{c}{\textbf{En}}                                                \\ \midrule
+        Europarl Parallel Corpus                             & 1,8M  & 48,1M  & 50,5M  \\
+        News Commentary Parallel Corpus                      & 0,3M  & 8,3M   & 8,2M   \\
+        Common Crawl Parallel Corpus                         & 2,3M  & 54,5M  & 58,8M  \\
+        ParaCrawl Parallel Corpus                            & 31,3M & 559,3M & 598,3M \\
+        EU Press Release Parallel Corpus                     & 1,4M  & 29,4M  & 30M    \\
+        WikiTitles Parallel Corpus                           & 1,3M  & 2,8M   & 3,2M   \\ \bottomrule
     \end{tabular}
     \caption{Statistics of WMT 2019 German$\rightarrow$English dataset.}
     \label{tab:wmt19stat}
@@ -62,51 +65,53 @@ The dataset was collected from various news sources on the internet. As mentione
 
 \subsection{Segmentation}
 % - Using huggingface implementation of WordPiece https://huggingface.co/docs/transformers/tokenizer_summary
-BERT uses a subword tokenization algorithm WordPiece \cite{schuster2012japanese} to construct the list of vocabularies. The algorithm is very similar to Byte-Pair Encoding (BPE) \cite{sennrich-etal-2016-neural} where it relies on a pre-tokenizer to split words within the training data, such as simple whitespace tokenization.
+BERT uses the subword tokenization algorithm called WordPiece \cite{schuster2012japanese} to construct the list of vocabularies. The algorithm is very similar to Byte-Pair Encoding (BPE; \cite{sennrich-etal-2016-neural}) where it relies on a pre-tokenizer to split words within the training data, such as simple whitespace tokenization.
 
-After the pre-tokenization, where the algorithm collects a set of unique words and their frequency, BPE starts by building a symbol vocabulary that consists of all symbols within the corpus. The symbol can consist of anything from the alphabet, numeric, and other symbols. BPE then learns a set of rules to merge and form a new symbol from two other symbols from the existing vocabulary. This process is repeated until the number of vocabulary matches the desired number of vocabulary that has already been determined. The number of vocabulary is the hyperparameter for BPE.
+After the pre-tokenization, where the algorithm collects the set of words and their frequency, BPE starts by building a symbol vocabulary that consists of all symbols within the corpus. The symbol can consist of anything from the alphabetical, numeric, and other symbols. BPE then learns a set of rules to merge and form a new symbol from two other symbols from the existing vocabulary. This process is repeated until the number of vocabulary items matches the desired vocabulary size.
 
-To provide better example, let's assume we have the following words and their frequency after pre-tokenization\footnote{Example is taken from \url{https://huggingface.co/docs/transformers/tokenizer_summary}}:
+To provide example, let us assume that we have the following words and their frequency after pre-tokenization\footnote{The example is taken from \url{https://huggingface.co/docs/transformers/tokenizer_summary}}:
 
 \bigskip
-``("hug", 10), ("pug", 5), ("pun", 12), ("bun", 4), ("hugs", 5)''
+("hug", 10), ("pug", 5), ("pun", 12), ("bun", 4), ("hugs", 5)
 \bigskip
 
-From these words, we then have a set of unique symbols: ``["b", "u", "n", "p", "h", "g", "s"]''. BPE then starts the merging process by using the total frequency of each possible symbol pair. The pair that occurs the most will be picked as a new vocabulary. In our example, we have "h" followed by "u" with a total of 15 times (10 times in \texttt{hug} and 5 times in \texttt{hugs}) and "u" followed by "g" with a total of 20 times. Therefore, we pick "ug" and append the new symbol to the vocabulary list. We repeat this process until we meet the desired total number of vocabularies.
+From these words, we then have the set of initial symbols: ``["b", "u", "n", "p", "h", "g", "s"]''. BPE then starts the merging process by using the total frequency of each possible symbol pair. The pair that occurs the most often will be picked as a new vocabulary item. In our example, we have "h" followed by "u" with a total of 15 occurences (10 times in \texttt{hug} and 5 times in \texttt{hugs}) and "u" followed by "g" with a total of 20 occurences. Therefore, we pick "ug" and append the new symbol to the vocabulary. We repeat this process until we meet the desired total number of vocabulariy items.
 
-During the decoding process and assuming now we have the following set of unique symbols: ``["b", "u", "n", "p", "h", "g", "s", "ug"]'', we now perform the tokenization process by matching the sub-word of the input word to the existing vocabulary. For example, if the incoming word is "mug", we will have "<unk> ug" as our tokenization as we do not have "m" in our vocabulary. "<unk>" is introduced as a special symbol to handle tokens/symbols that do not exist in the vocabulary. On the other hand, the word "bug" will be tokenized into "b ug".
+During the decoding process and assuming the following set of unique symbols: ``["b", "u", "n", "p", "h", "g", "s", "ug"]'', we now perform the tokenization process by matching the sub-word of the input word to the existing vocabulary. For example, if the incoming word is "mug", we will have "<unk> ug" as our tokenization as we do not have "m" in our vocabulary. "<unk>" is introduced as a special symbol to handle tokens/symbols that do not exist in the vocabulary. On the other hand, the word "bug" will be tokenized into "b ug".
 
 \section{Framework}
 \label{sec:framework}
 \subsection{HuggingFace Transformers}
-Transformers \cite{wolf2020transformers} is a library created by the Huggingface team that implements various transformer-based architectures. This library's primary aim is to implement transformer models specifically designed for both research and production. This implies that the library is easy to read, extend, and supported by the industrial-strength implementation for deployment in production. The library also aims to facilitate Transformer-based pre-trained models distribution to the public. Under the same foundation, this library supports distributing and re-using various pre-trained models in a centralized hub. This includes both the configuration, such as the hyperparameters used to instantiate the models and the pre-trained weights. This improves research reproducibility as numerous users can now re-use and improve their experiments on top of the pre-trained models.
+Transformers \cite{wolf2020transformers} is a library created by the Huggingface team that implements various transformer-based architectures. This library's primary aim is to implement transformer models specifically designed for both research and production. This implies that the library is easy to read, extend, and supported by the industrial-strength implementation for deployment in production. The library also aims to facilitate Transformer-based pre-trained models distribution to the public. Under the same foundation, this library supports the distribution and re-use of various pre-trained models in a centralized hub. This includes both the configuration, such as the hyperparameters used to instantiate the models and the pre-trained weights. This improves research reproducibility as numerous users can now re-use and improve their experiments based on the pre-trained models.
 
-Continuously maintained by the Huggingface team and contributed by over 400 external contributors outside of Huggingface is one of our reasons for choosing Huggingface to conduct the experiment in this work. The library is released under the Apache 2.0 license and is freely available to download on GitHub\footnote{\url{https://github.com/huggingface/}} and their official website\footnote{\url{https://huggingface.co}}. Furthermore, the website also provides easy to understand tutorials and detailed documentation of the API.
+The fact that the library is continuously maintained by the Huggingface team and supported by over 400 external contributors is one of our reasons for choosing Huggingface to conduct the experiments in this work. The library is released under the Apache 2.0 license and is freely available on GitHub.\footnote{\url{https://github.com/huggingface/}} and their official website\footnote{\url{https://huggingface.co}} Furthermore, the website also provides easy to understand tutorials and a detailed documentation of the API.
 
 \subsection{AdapterHub}
-Another reason why we choose Huggingface is the availability of AdapterHub \cite{pfeiffer-etal-2020-adapterhub}. Despite adapter's simplicity and achieving strong results in multi-task and cross-lingual transfer learning \cite{pfeiffer2021adapterfusion,pfeiffer2020madx}, reusing and sharing adapters was not yet straightforward. The reason is that adapters are rarely released independently due to their subtle difference in architecture and strong dependence on the base model, task, and language. To mitigate these issues, AdapterHub is created to facilitate the easiness of training models with adapters and share the fine-tuned adapters in various settings.
+Another reason why we choose Huggingface is the availability of AdapterHub \cite{pfeiffer-etal-2020-adapterhub}. Despite adapter's simplicity and achieving strong results in multi-task and cross-lingual transfer learning \cite{pfeiffer2021adapterfusion,pfeiffer2020madx}, reusing and sharing adapters was not straightforward. Adapters are rarely released independently due to their subtle differences in architecture and strong dependence on the base model, task, and language. To mitigate these issues, AdapterHub is created to facilitate the easiness of training models with adapters and share the fine-tuned adapters in various settings.
 
 \section{Automatic Evaluation}
 \label{sec:aeval}
-Bilingual Evaluation Understudy or \texttt{BLEU} \cite{BLEU} is one of the evaluation metrics that is widely used to evaluate MT models. It works by evaluating the output of an MT system (the hypothesis) with the correct references.
+Bilingual Evaluation Understudy or \texttt{BLEU} \cite{BLEU} is one of the evaluation metrics that is widely used to evaluate MT models. It works by evaluating the output of an MT system (the hypothesis) with the references.
 
-BLEU works by measuring the percentage of correct n-grams in the hypothesis and taking the difference in length of the hypothesis and references as a form of penalty. The percentage of n-grams is often interpreted as a measurement of precision. However, in some cases, simply calculating the correct n-grams may lead to a misinterpretation of the output. In the case of unigram ($n=1$), we can see the correct n-grams as the number of tokens available in the hypothesis and the references divided by the total number of tokens. To provide a clear example of why this is problematic, we provide an example below:
+BLEU works by measuring the percentage of the matching n-grams in the hypothesis and taking the difference in length of the hypothesis and references as a form of penalty. The percentage of n-grams is often interpreted as a measurement of precision. However, in some cases, simply calculating the matching n-grams may lead to a misinterpretation of the output. In the case of unigram ($n=1$), we can see the matching n-grams as the number of tokens available in the hypothesis and the references divided by the total number of tokens. See the following example:
 
 \bigskip
 
-\textbf{Hypothesis}: \underline{you} \underline{you}
+\textbf{Hypothesis}: \underline{you} \underline{you} \underline{you} \underline{you}
 
 \textbf{Reference}: I think \underline{you} should know that \underline{you} are right
 
 \bigskip
 
-The above example will lead to 100\% precision of the hypothesis despite the result only sharing the word \textbf{you}. To alleviate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
+The above example will lead to 100\% unigram precision of the hypothesis despite the result only sharing the word \textbf{you}. To alleviate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
 
 \begin{equation}
-    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{n-gram\in C}Count_{clip}(n-gram)}{\sum_{C'\in\{Candidates\}}\sum_{n-gram'\in C'}Count(n-gram')}
+    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{ng\in C}Count_{clip}(ng)}{\sum_{C'\in\{Candidates\}}\sum_{ng'\in C'}Count(ng')}
 \end{equation}
 
-We mentioned that other than n-grams, BLEU also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
+Where $ng$ is the number of n-grams used when calculating the score.
+
+We mentioned that other than n-grams, BLEU is also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
 
 \bigskip
 
@@ -116,25 +121,25 @@ We mentioned that other than n-grams, BLEU also considers the length of the hypo
 
 \bigskip
 
-Despite having a 100\% precision score, the hypothesis does not represent the correct translation compared to the reference. We want to elude such a problem by introducing a penalty called \textbf{brevity penalty}. The penalty works by measuring the length of the hypothesis relative to the reference and introducing a penalty to the size of $e^{(1-r/c)}$ when the condition is met. To be more specific, we refer to the equation below.
+Despite having a 100\% precision score, the hypothesis does not represent the correct translation compared to the reference. We want to elude such a problem by introducing a penalty called \textbf{brevity penalty}. The penalty works by measuring the length of the hypothesis relative to the reference length and  $e^{(1-r/c)}$ when the the candidate is shorter than the reference length. To be more specific, we refer to the equation below.
 
 \begin{equation}
     BP=\begin{cases} 1 & \mbox{if } c>r \\ e^{(1-r/c)} & \mbox{if } c\le r \end{cases}
 \end{equation}
 
-In the case of multi references, $r$ is the length of the reference with the closest length to the hypothesis, or it is called the \textbf{effective reference length}. One must note that the choice of the reference will vary between different implementations of BLEU. To be more precise, take the following example that shows the difference between two references is equal to 1 where one reference is 1 word shorter than the hypothesis and the other is 1 word longer:
+In the case of more than one references, $r$ is the length of the reference with the closest length to the hypothesis, called the \textbf{effective reference length}. One must note that the choice of the reference will vary between different implementations of BLEU. To be more precise, take the following example that shows the difference between two references is equal to 1 where one reference is 1 word shorter than the hypothesis and the other is 1 word longer:
 
 \bigskip
 
-\textbf{Candidate}: I eat
+\textbf{Candidate}: I eat fish on the beach with
 
-\textbf{Reference} 1: I eat that
+\textbf{Reference} 1: I eat fish on the beach with friends
 
-\textbf{Reference} 2: I
+\textbf{Reference} 2: I eat fish on the beach
 
 \bigskip
 
-From the above components, we combine both of them into a single BLEU score that is defined as follows:
+Taking the above components, BLEU is defined as follows:
 
 \begin{equation}
     BLEU=BP\cdot exp\left( \frac{\sum_{n=1}^{N} w_n \log p_n}{N} \right)
@@ -142,4 +147,4 @@ From the above components, we combine both of them into a single BLEU score that
 
 By default, BLEU computes the n-gram precision from unigrams to 4-grams. We perform the final score computation by calculating the average for each n-gram score and multiplying them by the brevity penalty (BP).
 
-In this work, we follow the implementation of sacrebleu\footnote{\url{https://github.com/mjpost/sacreBLEU}} that is wrapped under Huggingface Transformers framework.
+In this work, we follow the implementation of sacrebleu\footnote{\url{https://github.com/mjpost/sacreBLEU}} \normcite{post-2018-call} that is wrapped under Huggingface Transformers framework.
