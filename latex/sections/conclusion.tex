@@ -1,15 +1,17 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
-Experiments in Chapter \ref{chap:adaptmt} show that with the right initialization, adapters can help achieve better performance than training the models from scratch while only training far fewer weights than the original model. We further show that even with random fixed weights in the main part of the model, the adapters and cross-attention can recover and achieve a similar performance to one of the baseline models where we do not need to train hundreds of millions of weights.
+This thesis has explored ...
 
-On the subsequent experiments in Chapter \ref{chap:adaptefct}, we find that fine-tuning adapters on the encoder side are more important than the decoder. We also see a similar behaviour when we use real BERT weights only on the encoder or the decoder and fixed random weights in the other part. Interestingly, when the adapters were injected only to the decoder, the performance dropped to zero.
+Experiments in Chapter \ref{chap:adaptmt} show that with the right initialization, adapters can help achieve better performance than training the models from scratch while training far fewer weights than the original model. We further show that even with random fixed weights in the main part of the model, the adapters and cross-attention can recover and achieve a similar performance to one of the baseline models where we do not need to train hundreds of millions of weights.
 
-We further studied the behaviour of adapters when we try to down-scale the pre-trained model size. In our experiments, we found that the model with just half of the weights, such as \texttt{zsbert} or \texttt{zbert}, can closely match the performance of the baseline. Finally, we also observe that we can increase further the effectiveness of adapters in \texttt{zsbert} by only incorporating adapters on the encoder side.
+In the subsequent experiments in Chapter \ref{chap:adaptefct}, we find that fine-tuning adapters on the encoder side are more important than the decoder. We also see a similar behaviour when we use real BERT weights only on the encoder or the decoder and fixed random weights in the other part. Interestingly, when the adapters were injected only to the decoder, with the encoder pre-trained or random, the performance dropped to zero.
+
+We further studied the behaviour of adapters when we try to down-scale the pre-trained model size. In our experiments, we found that the model with just half of the weights, such as our \texttt{zsbert} or \texttt{zbert}, can closely match the performance of the baseline. Finally, we also observe that we can increase further the effectiveness of adapters in \texttt{zsbert} by only incorporating adapters on the encoder side.
 
 We see two practical applications from our findings:
 \begin{itemize}
     \item Initializing just the encoder with a true pre-trained model such as BERT (with a fixed random decoder) and fine-tuning with adapters could be useful when targeting low-resource languages.
-    \item Reducing the pre-trained BERT to half its size and fine-tuning with adapters provides useful GPU memory savings while keeping a similar performance as the baseline model.
+    \item Reducing the pre-trained BERT to half its size and fine-tuning with adapt\-ers provide useful GPU memory savings while keeping a similar performance as the baseline model.
 \end{itemize}
 
 In summary, our experiments show the potential of adapters in machine translation setup. We understand from the experiments that fine-tuning adapters with randomly set weights in the base pre-trained network can achieve similar result as training the entire transformer model with BERT config. Furthermore, the down-scaling experiments also show that with random weight reduction technique, we can reduce the size of BERT and achieve similar performance as the BERT model that was fine-tuned by only modifying the cross-attention layer.
