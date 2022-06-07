@@ -87,7 +87,7 @@ In this section, we conduct experiments to understand the contribution of adapte
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/baseline.png}}
     \centering
-    \caption{
+    \caption[Comparison between baseline models trained with different size of datasets.]{
         Comparison between baseline models trained with different size of datasets. \texttt{baseline} represents the model trained only using IWSLT; \texttt{baseline\_500k} represents the model trained using IWSLT and WMT with total of 500k sentence pairs; \texttt{baseline\_2m} represents the model trained using IWSLT and WMT with total of 2 million sentence pairs.}
     \label{img:basecomp}
 \end{figure}
@@ -98,9 +98,9 @@ To see the impact of including adapters, we compare the result on different size
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapterscomparison.png}}
     \centering
-    \caption{
+    \caption[Comparison between adapters pre-trained with different dataset sizes.]{
         % \XXX{Could you include baseline curve, too? This is rather important for comparison given the lack of the stopping criterion.}
-        Comparison between adapters pre-trained with different size of datasets. \texttt{baseline} represents the model trained only using IWSLT; \texttt{adapters\_pt} represents the model pre-trained only using IWSLT; \texttt{adapters\_pt\_500k} represents the model pre-trained using IWSLT and WMT with total of 500k sentence pairs; \texttt{adapters\_pt\_2m} represents the model pre-trained using IWSLT and WMT with total of 2 million sentence pairs; \texttt{adapters\_bert} represents the model that uses BERT weights.}
+        Comparison between adapters pre-trained with different dataset sizes. \texttt{baseline} represents the model trained only using IWSLT; \texttt{adapters\_pt} represents the model pre-trained only using IWSLT; \texttt{adapters\_pt\_500k} represents the model pre-trained using IWSLT and WMT with total of 500k sentence pairs; \texttt{adapters\_pt\_2m} represents the model pre-trained using IWSLT and WMT with total of 2 million sentence pairs; \texttt{adapters\_bert} represents the model that uses BERT weights.}
     \label{img:adpcomp}
 \end{figure}
 
@@ -134,7 +134,7 @@ We can see from \cref{img:shfrndcmp} the performance of the model that uses rand
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/randomshuffled.png}}
     \centering
-    \caption{Comparison between adapters using shuffled BERT and random weights as the pre-trained models. \texttt{baseline} represents the model trained only using IWSLT; \texttt{adapters\_random} represents the model pre-trained only using random weights; \texttt{adapters\_shuffled} represents the model pre-trained using column-wise shuffled BERT model; \texttt{adapters\_shuffled\_both} represents the model pre-trained using shuffled BERT model.}
+    \caption[Comparison between adapters using shuffled BERT and random weights as the pre-trained models.]{Comparison between adapters using shuffled BERT and random weights as the pre-trained models. \texttt{baseline} represents the model trained only using IWSLT; \texttt{adapters\_random} represents the model pre-trained only using random weights; \texttt{adapters\_shuffled} represents the model pre-trained using column-wise shuffled BERT model; \texttt{adapters\_shuffled\_both} represents the model pre-trained using shuffled BERT model.}
     \label{img:shfrndcmp}
 \end{figure}
 
@@ -160,7 +160,7 @@ We perform a quick check on the output of the model in \cref{tab:qtrand}. From t
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/random.png}}
     \centering
-    \caption{Comparison between pre-trained random weights and baseline model. \texttt{baseline} represents the model trained only using IWSLT; \texttt{baseline\_2m} represents the baseline model trained with a combination of IWSLT and WMT sentence pairs; \texttt{adapters\_random} represents the model pre-trained only using random weights; \texttt{adapters\_pt\_2m} represents the model pre-trained using IWSLT and WMT with total of 2 million sentence pairs; \texttt{adapters\_bert} represents the model that uses BERT weights}
+    \caption[Comparison between pre-trained random weights and baseline model.]{Comparison between pre-trained random weights and baseline model. \texttt{baseline} represents the model trained only using IWSLT; \texttt{baseline\_2m} represents the baseline model trained with a combination of IWSLT and WMT sentence pairs; \texttt{adapters\_random} represents the model pre-trained only using random weights; \texttt{adapters\_pt\_2m} represents the model pre-trained using IWSLT and WMT with total of 2 million sentence pairs; \texttt{adapters\_bert} represents the model that uses BERT weights}
     \label{img:rndbslcmp}
 \end{figure}
 

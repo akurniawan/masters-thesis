@@ -63,7 +63,7 @@ We would like to see the importance of adapters when put in different place. Sin
 \begin{figure}[]
     {\includegraphics[width=0.95\textwidth]{img/bert_pos.png}}
     \centering
-    \caption{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}).}
+    \caption[Results of ablation study for adapters in the encoder or the decoder.]{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}).}
     \label{img:adapt_bert_pos}
 \end{figure}
 We see in \cref{img:adapt_bert_pos} that adding adapters just in the encoder part brings and improvement and outperforms the baseline. Adapters only the encoder actually train the fastest at the beginning and their final performance is almost the same as if we added the adapters on both sides. For the decoder, on the other hand, we can see that (aside from a more promising start there is no benefit as there is no improvement in terms of late BLEU scores compared to the baseline. With this finding, we can reduce the cost of fine-tuning further by half when we do not include the adapters on the decoder.
@@ -92,7 +92,7 @@ In this part of the section, we want to answer the main question: "To what exten
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_randenc.png}}
     \centering
-    \caption{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the decoder is initialized with BERT while the encoder is initialized with random numbers.}
+    \caption[Comparison for model with adapters in the decoder and the encoder is initalized with random weights.]{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the decoder is initialized with BERT while the encoder is initialized with random numbers.}
     \label{img:adapt_bert_randenc}
 \end{figure}
 
@@ -110,7 +110,7 @@ In contrast to when the randomly set weights are on the encoder side, we can see
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_randdec.png}}
     \centering
-    \caption{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the encoder is initialized with BERT while the decoder is initialized with random numbers.}
+    \caption[Comparison for model with adapters in the decoder and the decoder is initalized with random weights]{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the encoder is initialized with BERT while the decoder is initialized with random numbers.}
     \label{img:adapt_bert_randdec}
 \end{figure}
 
@@ -157,7 +157,7 @@ In this section, we are trying to understand whether the position of both adapte
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zbert_pos.png}}
     \centering
-    \caption{Comparison between baseline BERT model, baseline \texttt{zbert} model, adapters in both encoder and decoder of \texttt{zbert} model (\texttt{adapt\_zbert\_reduc\_16}), adapters only in encoder of \texttt{zbert} model (\texttt{adapter\_zbert\_zbert}), and adapters only in decoder of \texttt{zbert} model (\texttt{zbert\_adapter\_zbert}).}
+    \caption[Comparison between baseline BERT and \texttt{zbert} models.]{Comparison between baseline BERT model, baseline \texttt{zbert} model, adapters in both encoder and decoder of \texttt{zbert} model (\texttt{adapt\_zbert\_reduc\_16}), adapters only in encoder of \texttt{zbert} model (\texttt{adapter\_zbert\_zbert}), and adapters only in decoder of \texttt{zbert} model (\texttt{zbert\_adapter\_zbert}).}
     \label{img:zbert_pos}
 \end{figure}
 
@@ -226,7 +226,7 @@ In \cref{img:adapter_zsbert_ratio}, when the adapters reduction ratio is further
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zsbert_pos.png}}
     \centering
-    \caption{Comparison between baseline BERT model, baseline \texttt{zsbert} model, adapters in both encoder and decoder of \texttt{zsbert} model (\texttt{adapt\_zsbert\_reduc\_16}), adapters only in encoder of \texttt{zsbert} model (\texttt{adapter\_zsbert\_zsbert}), and adapters only in decoder of \texttt{zsbert} model (\texttt{zsbert\_adapter\_zsbert}).}
+    \caption[Comparison between baseline BERT and \texttt{zsbert} models.]{Comparison between baseline BERT model, baseline \texttt{zsbert} model, adapters in both encoder and decoder of \texttt{zsbert} model (\texttt{adapt\_zsbert\_reduc\_16}), adapters only in encoder of \texttt{zsbert} model (\texttt{adapter\_zsbert\_zsbert}), and adapters only in decoder of \texttt{zsbert} model (\texttt{zsbert\_adapter\_zsbert}).}
     \label{img:zsbert_pos}
 \end{figure}
 
