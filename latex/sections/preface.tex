@@ -1,18 +1,18 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
-Pre-trained language models \citewithpar{devlin2018bert,howard2018universal} have received considerable attention in recent years. These models are trained on large scale corpora and then fine-tuned for a particular downstream task. This method allows pre-trained models to perform well across a range of natural language processing tasks. One of the most successful models is BERT \citewithpar{devlin2018bert}. BERT has been most extensively used for common Natural language understanding (NLU) tasks. It has been shown that BERT can achieve great performance with relatively straightforward fine-tuning, especially for classification-like tasks.
+Pre-trained language models \citewithpar{devlin2018bert,howard2018universal} have received considerable attention in recent years. These models are trained on large scale corpora and then fine-tuned for a particular downstream task. This method allows pre-trained models to perform well across a range of natural language processing tasks. One of the most successful models is BERT \citewithpar{devlin2018bert}. BERT has been most extensively used for common natural language understanding (NLU) tasks. It has been shown that BERT can achieve great performance with relatively straightforward fine-tuning, especially for classification-like tasks.
 
 For natural language generation (NLG), incorporating BERT is still challenging. According to \normcite{zhu2020incorporating}, simply incorporating BERT into the encoder side of the seq2seq architecture can hurt the performance. On the decoder side, BERT does not quite fit either because the bidirectional nature of the model was significantly different from the conditional language model (predicting the next word) objective we are aiming for.
 
-Fine-tuning all BERT's parameters is inefficient given that there are approximately 200 million parameters in a single model of BERT. Naive fine-tuning also often results in catastrophic forgetting, where the models forget the previous knowledge they have acquired while improving on the new domain \citewithpar{mccloskey1989catastrophic,yogatama2019learning}. This may explain why it is considered harmful to simply fine-tune an initialized encoder component with BERT. It is also known that fine-tuning large pre-trained language models could achieve unstable and fragile performance on small datasets.
+Fine-tuning all BERT's parameters is inefficient given that there are approximately 200 million parameters in a single model of BERT. Naive fine-tuning also often results in catastrophic forgetting, where the models forget the previous knowledge they have acquired while improving on the new domain \citewithpar{mccloskey1989catastrophic,yogatama2019learning}. This may explain why it is considered harmful to simply fine-tune an initialized encoder component with BERT. It is also known that fine-tuning large pre-trained language models could result in unstable and fragile performance on small datasets.
 
-Adapter is an alternative approach that allows to fine-tune a model without altering the original network weights \citewithpar{houlsby2019parameter,bapna2019simple}. By leveraging adapters, one can reduce the number of parameters updated in fine-tuning and make the process computationally less expensive while achieving similar results. Another useful property of the approach with adapters is that they are more robust against catastrophic forgetting than fine-tuning \citewithpar{han2021robust}.
+Adapter is an alternative approach that allows for fine-tuning a model without altering the original network weights \citewithpar{houlsby2019parameter,bapna2019simple}. By leveraging adapters, one can reduce the number of parameters updated in fine-tuning and make the process computationally less expensive while achieving similar results. Another useful property of the approach with adapters is that they are more robust against catastrophic forgetting than fine-tuning \citewithpar{han2021robust}.
 
-In this work, we use BERT and its variants as the base pre-trained models and fine-tune them with adapters. We evaluate the models on machine translation with the following objectives:
+This work uses BERT and its variants as the base pre-trained models and fine-tune them with adapters. We evaluate the models on machine translation with the following objectives:
 \begin{itemize}
-    \item We conduct a study to understand the contribution of good representation in the pre-training language model when using adapters during the fine-tuning.
+    \item We conduct a study to understand the contribution of good representation in the pre-trained language model when fine-tuned using adapters.
     \item We conduct a study to evaluate the effectiveness of adapters in the seq2seq framework by putting them only in the encoder or the decoder.
-    \item We experiment with down-scaling the pre-trained model size and try to recover the performance to be comparable to the full-sized model.
+    \item We experiment with down-scaling the pre-trained model size and try to recover the performance from being comparable to the full-sized model.
 \end{itemize}
 
 \section*{Thesis Organization}
@@ -21,7 +21,7 @@ In this work, we use BERT and its variants as the base pre-trained models and fi
 
 \paragraph{Chapter 2} reviews the previous related work on transfer learning from models that were pre-trained on language model objectives and the usage of adapters in various disciplines within text and speech domains.
 
-\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then explain the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework that we use for the experiment and the automatic evaluation metric.
+\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then explain the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework for the experiment and the automatic evaluation metric.
 
 \paragraph{Chapter 4} presents our attempt to use adapters in machine translation setup. This chapter mainly focuses on the contribution of the pre-trained representation during fine-tuning with adapters in machine translation. We then provide further discussions of our findings in more detail.
 
