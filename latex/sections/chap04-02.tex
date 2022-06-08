@@ -3,7 +3,7 @@
 
 \chapter{Adapters Effectiveness in Machine Translation}
 \label{chap:adaptefct}
-In this chapter, we continue the study from the previous chapter to understand more about the relation between adapters and pre-trained models. Like the previous chapter, we use BERT and its variance, as the base pre-trained models and fine-tune them with adapters. The difference with the previous chapter is that we do not use our own pre-trained language models and focus solely on the BERT weights. This study aims to evaluate the combination of adapters and transformer models on machine translation tasks and study adapters' effectiveness by putting them only in the encoder or the decoder. We evaluate the models on the machine translation task. We also experiment with down-scaling the pre-trained model size and try to recover the performance from being comparable to the full-sized model. We conduct the experiments by separating them into three different areas:
+In this chapter, we continue the study from the previous chapter to understand more about the relation between adapters and pre-trained models. Like the previous chapter, we use BERT and its variance as the base pre-trained models and fine-tune them with adapters. The difference with the previous chapter is that we do not use our pre-trained language models and focus solely on the BERT weights. This study evaluates the combination of adapters and transformer models on machine translation tasks and studies adapters' effectiveness by putting them only in the encoder or the decoder. We evaluate the models on the machine translation task. We also experiment with down-scaling the pre-trained model size and try to recover the performance from being comparable to the full-sized model. We conduct the experiments by separating them into three different areas:
 \begin{itemize}
     \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights and investigate the importance of adapters in encoder or decoder.
     \item Use BERT weights and investigate their importance compared to random weights in the encoder or decoder while fine-tuning with adapters.
@@ -27,10 +27,10 @@ In this chapter, we continue the study from the previous chapter to understand m
 
 As we mentioned at the beginning of the chapter, we have several scenarios we use to conduct the experiments. Despite various possibilities of different setups, we now describe variables that we fixed throughout the experiments. As mentioned in Chapter \cref{chap:03}, we use Huggingface as our main framework with added modifications for adapters. In contrary to Chapter \ref{chap:adaptmt}, we do not investigate language models that we train ourselves, but instead, we focus mainly on the BERT language model. We use the same hyperparameters to Chapter \ref{chap:03} which we describe on \cref{tab:hyp_invest}.
 
-The model and hyperparameters that we use throughout the experiment remain the same as described on Chapter \ref{chap:adaptmt}. We use transformer model with seq2seq architecture, and we follow BERT-based configuration to initialize both the encoder and the decoder.
+The model and hyperparameters that we use throughout the experiment remain the same as described in Chapter \ref{chap:adaptmt}. We use transformer model with seq2seq architecture, and we follow BERT-based configuration to initialize both the encoder and the decoder.
 
 \subsection{Dataset}
-As mentioned in the previous section, we focus mainly on machine translation tasks. We have already described on Chapter \ref{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we focus solely on IWSLT to fine-tune and evaluate our models.
+As mentioned in the previous section, we focus mainly on machine translation tasks. We have already described in Chapter \ref{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we focus solely on IWSLT to fine-tune and evaluate our models.
 
 \section{Original BERT}
 \subsection{Size of Adapters}
@@ -55,7 +55,7 @@ Furthermore, the difference between the ratios is minimal. It suggests that ther
 \subsection{Position of Adapters (Encoder vs Decoder)}
 \label{sec:posada}
 \subsubsection{Experiment Setup and Motivation}
-We would like to see the importance of adapters when put in a different place. Since we are working with seq2seq architecture in this work, we would like to see whether only incorporating adapters on one side can already be beneficial and reduce the weight added to the model.
+We would like to see the importance of adapters when they are put in different places. Since we are working with seq2seq architecture in this work, we would like to see whether only incorporating adapters on one side can already be beneficial and reduce the weight added to the model.
 
 \subsubsection{Experiment Result}
 \begin{figure}[]
@@ -64,7 +64,7 @@ We would like to see the importance of adapters when put in a different place. S
     \caption[Results of ablation study for adapters in the encoder or the decoder.]{Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}).}
     \label{img:adapt_bert_pos}
 \end{figure}
-We see in \cref{img:adapt_bert_pos} that adding adapters just in the encoder part brings an improvement and outperforms the baseline. Adapters only the encoder train the fastest at the beginning, and their final performance is almost the same as if we added the adapters on both sides. For the decoder, on the other hand, we can see that (aside from a more promising start, there is no benefit as there is no improvement in terms of late BLEU scores compared to the baseline. With this finding, we can reduce the cost of fine-tuning further by half when we do not include the adapters on the decoder.
+We see in \cref{img:adapt_bert_pos} that adding adapters just in the encoder part brings an improvement and outperforms the baseline. Adapters only in the encoder train the fastest at the beginning, and their final performance is almost the same as if we added the adapters on both sides. For the decoder, on the other hand, we can see that aside from a more promising start, there is no benefit as there is no improvement in terms of late BLEU scores compared to the baseline. With this finding, we can reduce the cost of fine-tuning further by half when we do not include the adapters on the decoder.
 % Adding the adapters on the encoder and fine-tuning it is more cost-effective than the decoder. With this finding, we can reduce the cost of fine-tuning by half when we do not include the adapters on the decoder.
 
 \subsection{True BERT in Encoder vs Decoder}
@@ -72,7 +72,7 @@ We see in \cref{img:adapt_bert_pos} that adding adapters just in the encoder par
 \subsubsection{Experiment Setup and Motivation}
 This section investigates the importance of having BERT the pre-training models as the initial weights in either the encoder or decoder. In addition to that, we also expand the experiment further by understanding the correlation of adding adapters on top of the randomly set weights.
 
-We start by defining the definition of the setup in this experiment. The previous chapter introduced an experiment where we instantiate the base Transformer model with only random weights. We then fine-tune the base Transformer model by only updating the adapters and cross-attention layer. In this setup, we are doing experiments in a similar concept. We use random (fixed) weights instead of the original pre-trained BERT weights. We thus have a seq2seq model with the random encoder followed by the BERT decoder and vice versa. At fine-tuning, we update both the adapters in the encoder and decoder and cross-attention layer (or cross-attention layer only in our baseline models).
+We start by describing the setup in this experiment. The previous chapter introduced an experiment where we instantiate the base transformer model with only random weights. We then fine-tune the base transformer model by only updating the adapters and cross-attention layer. In this setup, we are doing experiments in a similar concept. We use random (fixed) weights instead of the original pre-trained BERT weights. We thus have a seq2seq model with the random weights encoder followed by the BERT decoder and vice versa. In the fine-tuning stage, we update both the adapters in the encoder and decoder and the cross-attention layer (or cross-attention layer only in our baseline models).
 
 The purpose of the experiments are:
 \begin{itemize}
@@ -102,7 +102,7 @@ When the adapters are removed from the decoder, we see a degradation in performa
 \paragraph{Randomly Set Weights on Decoder}
 Similar to the previous section, the main question in this experiment is, "To what extent can the adapters restore the missing gap when the decoder does not contain useful information (relative to BERT)?"
 
-In contrast to when the randomly set weights are on the encoder side, we can see from \cref{img:adapt_bert_randdec} that the model has comparable performance to the one we have on the BERT baseline. This tells us that the pre-training weights in the encoder are more critical than in the decoder when we have adapters on both sides. However, when removing the adapters on the encoder side, we see similar performance as in the previous section, where the performance drops to zero in the middle of training. This furthers our arguments that adapters are necessary to adjust the weights in the model so that the cross-attention layer can work properly.
+In contrast to when the randomly set weights are on the encoder side, we can see from \cref{img:adapt_bert_randdec} that the model has comparable performance to the one we have on the BERT baseline. This tells us that the pre-training weights in the encoder are more critical than in the decoder when we have adapters on both sides. However, when removing the adapters on the encoder side, we see similar performance as in the previous section, where the performance drops to zero in the middle of training. This further strengthens our arguments that adapters are necessary to adjust the weights in the model so that the cross-attention layer can work properly.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/adapter_bert_randdec.png}}
@@ -149,7 +149,7 @@ We can see in \cref{img:baseline_zbert} that we are losing performance of about 
 From \cref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially, we can see some improvement in the BLEU score compared to the higher ratio. However, they eventually converge to a similar performance by the end of training with no significant difference between different ratios. From this result, we can understand that depending on the base pre-trained model, adapters still have a limitation in achieving certain performance.
 
 \paragraph{Adapters Position}
-In this section, we are trying to understand whether the position of both adapters and the pre-training models affect the model performance, similar to what we have seen in \cref{sec:posada}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
+In this section, we aim to understand whether the position of both adapters and the pre-training models affect the model performance, similar to what we have seen in \cref{sec:posada}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.
 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/zbert_pos.png}}
