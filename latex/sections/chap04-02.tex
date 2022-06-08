@@ -3,7 +3,7 @@
 
 \chapter{Adapters Effectiveness in Machine Translation}
 \label{chap:adaptefct}
-In this chapter, we continue the study from the previous chapter to understand more about the relation between adapters and pre-trained models. Like the previous chapter, we use BERT and its variance, per-our definition below, as the base pre-trained models and fine-tune them with adapters. This study aims to evaluate the combination of adapters and transformer models on machine translation tasks and study adapters' effectiveness by putting them only in the encoder or the decoder. We evaluate the models on the machine translation task. We also experiment with down-scaling the pre-trained model size and try to recover the performance from being comparable to the full-sized model. We conduct the experiments by separating them into three different areas:
+In this chapter, we continue the study from the previous chapter to understand more about the relation between adapters and pre-trained models. Like the previous chapter, we use BERT and its variance, as the base pre-trained models and fine-tune them with adapters. The difference with the previous chapter is that we do not use our own pre-trained language models and focus solely on the BERT weights. This study aims to evaluate the combination of adapters and transformer models on machine translation tasks and study adapters' effectiveness by putting them only in the encoder or the decoder. We evaluate the models on the machine translation task. We also experiment with down-scaling the pre-trained model size and try to recover the performance from being comparable to the full-sized model. We conduct the experiments by separating them into three different areas:
 \begin{itemize}
     \item Use BERT weights\footnote{We use publicly available BERT weights from Huggingface hub \url{https://huggingface.co}} as the pre-train weights and investigate the importance of adapters in encoder or decoder.
     \item Use BERT weights and investigate their importance compared to random weights in the encoder or decoder while fine-tuning with adapters.
@@ -25,12 +25,12 @@ In this chapter, we continue the study from the previous chapter to understand m
     \label{tab:hyp_invest}
 \end{table}
 
-As we mentioned at the beginning of the chapter, we have several scenarios we use to conduct the experiments. Despite various possibilities of different setups, we describe variables that we fixed throughout the experiments. As mentioned in Chapter \ref{chap:03}, we use Huggingface as our main framework with added modifications for adapters. In contrary to Chapter \ref{chap:adaptmt}, we do not investigate language models that we train ourselves, but instead, we focus mainly on the BERT language model. We use the same hyperparameters to Chapter \ref{chap:03} which we describe on \cref{tab:hyp_invest}.
+As we mentioned at the beginning of the chapter, we have several scenarios we use to conduct the experiments. Despite various possibilities of different setups, we now describe variables that we fixed throughout the experiments. As mentioned in Chapter \cref{chap:03}, we use Huggingface as our main framework with added modifications for adapters. In contrary to Chapter \ref{chap:adaptmt}, we do not investigate language models that we train ourselves, but instead, we focus mainly on the BERT language model. We use the same hyperparameters to Chapter \ref{chap:03} which we describe on \cref{tab:hyp_invest}.
 
-The model and hyperparameters that we use throughout the experiment remain the same as described on \cref{chap:adaptmt}. We use transformer model with seq2seq architecture, and we follow BERT-based configuration to initialize both the encoder and the decoder.
+The model and hyperparameters that we use throughout the experiment remain the same as described on Chapter \ref{chap:adaptmt}. We use transformer model with seq2seq architecture, and we follow BERT-based configuration to initialize both the encoder and the decoder.
 
 \subsection{Dataset}
-As mentioned in the previous section, we focus mainly on machine translation tasks. We have already described on cref{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we focus solely on IWSLT to fine-tune and evaluate our models.
+As mentioned in the previous section, we focus mainly on machine translation tasks. We have already described on Chapter \ref{chap:03} that WMT is mainly used for language model training and mixed training for models that were trained from scratch. For machine translation, we focus solely on IWSLT to fine-tune and evaluate our models.
 
 \section{Original BERT}
 \subsection{Size of Adapters}
