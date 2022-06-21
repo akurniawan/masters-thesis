@@ -50,14 +50,14 @@ The task of the \texttt{encoder} is to produce a vector representation of the in
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/rnnseq2seq.png}}
     \centering
-    \caption{Illustration of seq2seq architecture\protect\footnotemark.[1]}
+    \caption{Illustration of seq2seq architecture from \normcite{johnson_2022}}
     \label{img:rnnseq2seq}
 \end{figure}
 
 \normcite{cho2014properties} found several disadvantages of using this variant of the seq2seq framework. The models' performance decreased when the length of the source sentence increased. From the previous paragraph, we recall that the \texttt{decoder} only uses the last vector of \texttt{encoder} as the additional feature.
 The vector is a fixed-size vector whose size is defined prior to the training. Hence, the vector could be less informative when the source sentence grows due to the missing information that it has to sacrifice during the encoding. In essence, this framework forces the \texttt{encoder} to create a good representation by combining the features from all the words in the source sentence within a single vector with a limited size.
 
-\footnotetext[1]{Figure reprinted from \protect\url{https://www.guru99.com/seq2seq-model.html}.}
+% \footnotetext[1]{Figure reprinted from \protect\url{https://www.guru99.com/seq2seq-model.html}.}
 
 Furthermore, RNNs also suffer from another problem where the gradient can be extremely small or large. These problems are often mentioned as vanishing and exploding gradient problems. When the model's gradient is extremely small, RNNs can not learn from the data effectively and struggle, especially with long-range dependencies. On the other hand, when the gradient is extremely large, it can affect the weight parameters by moving them far away from the optimal space. This would disrupt the learning process and cause the model to fail to learn. This problem can happen in seq2seq architecture as we backpropagate the weights from the end of the \texttt{decoder} to the beginning of the \texttt{encoder}.
 
@@ -67,13 +67,13 @@ An extension of the encoder-decoder model is proposed by jointly learning to tra
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/attseq2seq.png}}
     \centering
-    \caption{Illustration of seq2seq architecture with attention\protect\footnotemark[2].}
+    \caption{Illustration of seq2seq architecture with attention from \normcite{seq2seq_and_attention_2022}.}
     \label{img:attseq2seq}
 \end{figure}
 
 This method eliminates the need for a neural model to learn to squash the whole sentence into a fixed-length vector. Instead of trying to encode a whole sentence as the original method \citewithpar{sutskever2014sequence}, it is softly combining vectors from the source sentence that is deemed to contain the most relevant information to be used while decoding the translated message. This allows the model to provide better predictions in long sentences. We can see the illustration of this architecture from \cref{img:attseq2seq}.
 
-\footnotetext[2]{Figure reprinted from \protect\url{https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html}.}
+% \footnotetext[2]{Figure reprinted from \protect\url{https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html}.}
 
 The proposed approach achieves significantly better translation quality than the basic encoder-decoder model. The improvement is especially evident in longer sentences. The model shows comparable performance to or close to the phrase-based system in the En-Fr pair.
 
