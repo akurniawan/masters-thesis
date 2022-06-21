@@ -231,6 +231,6 @@ We also notice that the BERT base models have difficulties generating long sente
         \begin{tabular}[c]{@{}l@{}}moneyball erscheint bald\\ und dreht sich um\\ statistiken und um diese zu\\ nutzen ein großartiges baseball\\ team aufzustellen.\end{tabular}                   &
         \begin{tabular}[c]{@{}l@{}}fatball soon appears and it\\ turns out statistics and\\ to use that to build a\\ great baseball team\end{tabular}                                                 \\ \bottomrule
     \end{tabular}
-    \caption{The difference of outputs between similar inputs where the input on the first row containing extra token \texttt{\&quot\;}.}
+    \caption{An example of bad model behaviour when the input contains unknown tokens like \texttt{\&quot\;} (top row). The translation is not abruptly cut if these symbols are removed (bottom row).}
     \label{tab:errout}
 \end{table}
