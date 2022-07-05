@@ -7,6 +7,7 @@ clean:
 final: build-all
 	mv cuni/thesis.pdf pdf/cuni-thesis.pdf
 	mv cuni/abstract.pdf pdf/cuni-abstract.pdf
+	mv cuni/abstract_cs.pdf pdf/cuni-abstract-cs.pdf
 	mv malta/fyp.pdf pdf/malta-thesis.pdf
 
 build-all:
