@@ -28,4 +28,4 @@ workspace.*
 **/dataset/sample
 **/wandb
 **/outputs/*
-**/pdf/*.pdf
+# **/pdf/*.pdf
