@@ -21,9 +21,9 @@ This work uses BERT and its variants as the base pre-trained models and fine-tun
 
 \paragraph{Chapter 2} reviews the previous related work on transfer learning from models that were pre-trained on language model objectives and the usage of adapters in various disciplines within text and speech domains.
 
-\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then explain the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework for the experiment and the automatic evaluation metric.
+\paragraph{Chapter 3} describes the dataset that we use to train language models and machine translation. We then explain the pre-processing of the dataset and the tokenization to construct the vocabularies. Finally, we describe the framework for the experiments and the automatic evaluation metric.
 
-\paragraph{Chapter 4} presents our attempt to use adapters in machine translation setup. This chapter mainly focuses on the contribution of the pre-trained representation during fine-tuning with adapters in machine translation. We then provide discussions of our findings in more detail.
+\paragraph{Chapter 4} presents our attempt to use adapters in machine translation setup. This chapter focuses on the contribution of pre-trained representations when fine-tuning with adapters. We discuss the result of our experiments by referring to the automatic evaluation metric as well as providing our own manual analysis. Furthermore, we discuss the limitation of incorporating BERT in machine translation by providing the translation errors.
 
 \paragraph{Chapter 5} presents our attempt to understand the effectiveness of adapters as well as the impact of the pre-trained weights for adapters by placing them only in either the encoder or decoder. We then continue the experiments by down-scaling BERT to half of the size and trying to recover the adapter's performance so that it is comparable to the full-sized model. We provide discussions of the phenomenon that happens when reducing the size of the original BERT model.
 
