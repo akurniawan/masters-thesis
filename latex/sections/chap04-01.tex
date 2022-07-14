@@ -104,8 +104,7 @@ In this section, we conduct experiments to understand the contribution of adapt\
     \item Used for pre-training and later fine-tuning the seq2seq model on IWSLT parallel data.
 \end{itemize}
 
-\subsubsection{Experiment Results}
-\begin{figure}[h]
+\begin{figure}[t]
     {\includegraphics[width=0.85\textwidth]{img/baseline.png}}
     \centering
     \caption[Comparison between baseline models trained with different size of datasets.]{
@@ -113,18 +112,21 @@ In this section, we conduct experiments to understand the contribution of adapt\
     \label{img:basecomp}
 \end{figure}
 
+\subsubsection{Experiment Results}
+
 In this section, we compare the result of the baseline models with the fine-tuned models with adapters. Our first experiment compared the results from an empty BERT model (a transformer model with BERT configuration but no pre-trained BERT weights) without any pre-training and adapters and only trained the model from scratch. We refer to these models as our \texttt{baseline} for the rest of this chapter. From \cref{img:basecomp}, we can see that adding more data to the baseline models does not necessarily improve the performance. We suspect the models require more training time to get the best final performance. There is a clear gap between \texttt{baseline\_2m} and the rest of the baseline models. \texttt{baseline} and \texttt{baseline\_500k} perform really well from the start while \texttt{baseline\_2m} lags behind. We suspect this is due to the effect of including more sentences from different domains. We found that \texttt{baseline\_500k} performs the best as it balances the models to avoid overfitting in the intended domain and still benefits from out-of-domain data. \texttt{baseline\_2m} shows the impact on domain difference where it has relatively lower performance than the other models. However, we must acknowledge that the model has not fully converged in the limited training time (measured by the number of steps) we have and has a chance to improve its performance further. Despite the lower performance in BLEU score, \texttt{baseline\_2m} deserves a manual evaluation of the translation output. We argue that in some cases, lower BLEU may not necessarily reflect a lower quality. We perform the manual evaluation at a later stage in this chapter.
 
 To see the impact of adapters, we compare the result on different sizes of pre-training data used for the base model. The base models are then fine-tuned with the adapters module on the IWSLT data. As we can see from \cref{img:adpcomp}, pre-trained BERT with adapters achieves the best performance from the earlier steps compared to the rest of the models. In contrast to the baseline models, we see the benefit of adding more sentences to the pre-training (see \texttt{adapters\_pt\_2m} vs \texttt{adapters\_pt\_500k}). From \cref{img:basecomp} we see that \texttt{baseline\_500k} outperforms \texttt{baseline\_2m} by approximately 5 BLEU despite larger training data on \texttt{baseline\_2m}. Note that the training data we refer to in the baseline models is the training data for MT. On the other hand, when we add more training data on the pre-training side, we can see that the model trained using 500k data has a lower performance than the one using 2 million data. This tells us that adding larger pre-training monolingual data and then fine-tuning the models with adapters impact the performance positively.
 
-In the model that only uses IWSLT as the pre-training data, we observe performance degradation in the middle of the fine-tuning. We found this is due to the gradient explosion in the cross-attention layer, and we attribute this instability to the small data used in the pre-training. In the later steps, the IWSLT model eventually achieved performance similar to the 500k model.
 \begin{figure}[h]
-    {\includegraphics[width=0.85\textwidth]{img/adapterscomparison.png}}
+    {\includegraphics[width=0.75\textwidth]{img/adapterscomparison.png}}
     \centering
     \caption[The effect of pre-training data size when the adapters are then trained on the same IWSLT data.]{
         The effect of pre-training data size when the adapters are then trained on the same IWSLT data. \texttt{baseline} represents the model trained only using IWSLT; \texttt{adapters\_pt} represents the model pre-trained only using IWSLT; \texttt{adapters\_pt\_500k} represents the model pre-trained using IWSLT and WMT with total of 500k sentence pairs; \texttt{adapters\_pt\_2m} represents the model pre-trained using IWSLT and WMT with total of 2 million sentence pairs; \texttt{adapters\_bert} represents the model that uses BERT weights.}
     \label{img:adpcomp}
 \end{figure}
+
+In the model that only uses IWSLT as the pre-training data, we observe performance degradation in the middle of the fine-tuning. We found this is due to the gradient explosion in the cross-attention layer, and we attribute this instability to the small data used in the pre-training. In the later steps, the IWSLT model eventually achieved performance similar to the 500k model.
 
 \subsection{Random and Shuffled Pre-trained Weights}
 \label{ssec:randshuff}
@@ -132,7 +134,7 @@ In the model that only uses IWSLT as the pre-training data, we observe performan
 We perform two different categories of experiments to study how the adapters benefit from the pre-trained weights.
 First, we conduct experiments where we shuffle the BERT weights. We separate the weights initialization into two approaches to perform the experiments:
 \begin{itemize}
-    \item We shuffled the weights from the column perspective. We shuffled the weights by preserving columns in all the weights matrices in the BERT network while keeping the row-wise order intact.
+    \item We shuffled the weights from the column perspective. We shuffled the column-wise order of all the matrices while keeping the row-wise order intact.
     \item We shuffled the weights from both column and row perspectives.
 \end{itemize}
 
