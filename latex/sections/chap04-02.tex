@@ -109,7 +109,7 @@ In contrast to when the randomly set weights are on the encoder side, we can see
 \begin{figure}[h]
     {\includegraphics[width=0.85\textwidth]{img/adapter_bert_randdec.png}}
     \centering
-    \caption[BERT + Random: Comparison for model with adapters in the decoder and the decoder is initalized with random weights]{BERT + Random: Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the encoder is initialized with BERT while the decoder is initialized with random numbers.}
+    \caption[BERT + Random: Comparison for model with adapters in the decoder and the decoder is initalized with random weights.]{BERT + Random: Comparison between baseline BERT model and adapters model where the adapters are placed in three different setups: 1) Adapters in both encoder and decoder (\texttt{adapt\_bert\_reduc\_16}); 2) Adapters only in encoder (\texttt{adapter\_bert\_bert}); 3) Adapters only in decoder (\texttt{bert\_adapter\_bert}) and the encoder is initialized with BERT while the decoder is initialized with random numbers.}
     \label{img:adapt_bert_randdec}
 \end{figure}
 
@@ -217,7 +217,7 @@ We can see that the model with the lowest reduction ratio (1) manages to close t
         \textbf{Ratio 2}                                                                                 & 10.837.434 & 95.143.296 & 105.980.730 & 10.2\% \\
         \textbf{Ratio 1}                                                                                 & 14.380.986 & 95.143.296 & 109.524.282 & 13.1\% \\ \bottomrule
     \end{tabular}
-    \caption{Total trainable variables in \texttt{zsbert} with adapters on different ratio vs normal BERT model}
+    \caption{Total trainable variables in \texttt{zsbert} with adapters on different ratio vs normal BERT model.}
     \label{tab:numvars}
 \end{table*}
 

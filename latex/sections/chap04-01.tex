@@ -37,7 +37,7 @@ Datasets (2) and (3) were constructed with a simple approach by using all traini
         IWSLT + WMT 500k                                                                                & Random BERT      & Yes & No  \\ \midrule
         IWSLT + WMT 2m                                                                                  & Random BERT      & Yes & No  \\ \bottomrule
     \end{tabular}
-    \caption[IWSLT and WMT data usages with respect to the weights initialization]{The initial weights represent the weights used on both the encoder and decoder. Pre-trained BERT refers to the pre-trained models that use BERT. Random BERT models use BERT configuration but not the weights. Therefore, contrary to the Pre-trained BERT, Random BERT models undergo a pre-training process before fine-tuning. The pre-trained and fine-tuned columns represent the boolean value to mark whether the models initialized with the targeted weights are pre-trained or fine-tuned with the respective data. For example, Huggingface BERT weights are not pre-trained with IWSLT but use IWSLT for fine-tuning.}
+    \caption[IWSLT and WMT data usages with respect to the weights initialization.]{The initial weights represent the weights used on both the encoder and decoder. Pre-trained BERT refers to the pre-trained models that use BERT. Random BERT models use BERT configuration but not the weights. Therefore, contrary to the Pre-trained BERT, Random BERT models undergo a pre-training process before fine-tuning. The pre-trained and fine-tuned columns represent the boolean value to mark whether the models initialized with the targeted weights are pre-trained or fine-tuned with the respective data. For example, Huggingface BERT weights are not pre-trained with IWSLT but use IWSLT for fine-tuning.}
     \label{tab:mixeddataset}
 \end{table}
 
@@ -79,7 +79,7 @@ We use the default BERT configuration from Huggingface to construct the model. T
         0.1                             &
         \begin{tabular}[c]{@{}c@{}}The dropout ratio for the\\ attention probabilities\end{tabular}                                                                \\ \bottomrule
     \end{tabular}
-    \caption{Transformer BERT hyperparameters for English (based on \texttt{bert-base-uncased}) and German (based on \texttt{bert-base-german-dbmdz-uncased}).}
+    \caption[Transformer BERT hyperparameters for English and German.]{Transformer BERT hyperparameters for English (based on \texttt{bert-base-uncased}) and German (based on \texttt{bert-base-german-dbmdz-uncased}).}
     \label{tab:hyp}
 \end{table}
 
@@ -186,7 +186,7 @@ We analyze the random weights by comparing the result with the best-performing b
         \begin{tabular}[c]{@{}l@{}}\textbf{Input}: aber gleichzeitig hatten sie eine klare kenntnis des waldes, \\ die erstaunlich war.\\ \textbf{Reference}: but at the same time they had a perspicacious knowledge of the\\ forest that was astonishing.\\ \textbf{Hypothesis}: but at the same time, they had a clear of the audience\\ who was amazing.\end{tabular} \\ \midrule
         \begin{tabular}[c]{@{}l@{}}\textbf{Input}: es ist so wunderbar. ihr musst es beschutzen. \& quot ;\\ \textbf{Reference}: it is that beautiful . it is yours to protect . \&quot;\\ \textbf{Hypothesis}: it \& apos ; s wonderful. you have to protect it. \& quot ;\end{tabular}                                                                                  \\ \bottomrule
     \end{tabular}
-    \caption{Prediction results from randomly set pre-trained model fine-tuned with adapters}
+    \caption{Prediction results from randomly set pre-trained model fine-tuned with adapters.}
     \label{tab:qtrand}
 \end{table*}
 
@@ -239,6 +239,6 @@ We also notice that the BERT-based models have difficulties generating long sent
         \begin{tabular}[c]{@{}l@{}}moneyball erscheint bald\\ und dreht sich um\\ statistiken und um diese zu\\ nutzen ein großartiges baseball\\ team aufzustellen.\end{tabular}                   &
         \begin{tabular}[c]{@{}l@{}}fatball soon appears and it\\ turns out statistics and\\ to use that to build a\\ great baseball team\end{tabular}                                                 \\ \bottomrule
     \end{tabular}
-    \caption[An example of bad model behaviour when the input contains unknown tokens]{An example of bad model behaviour when the input contains unknown tokens like \texttt{\&quot\;} (top row). The translation is not abruptly cut if these symbols are removed (bottom row).}
+    \caption[An example of bad model behaviour when the input contains unknown tokens.]{An example of bad model behaviour when the input contains unknown tokens like \texttt{\&quot\;} (top row). The translation is not abruptly cut if these symbols are removed (bottom row).}
     \label{tab:errout}
 \end{table}
