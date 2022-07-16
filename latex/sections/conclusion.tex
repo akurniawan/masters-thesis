@@ -8,11 +8,11 @@ The experiments in \cref{chap:adaptmt} show that with the proper initialization,
 
 In the subsequent experiments in \cref{chap:adaptefct}, we find that fine-tuning adapters on the encoder side is more important than in the decoder. We also see a similar behaviour when we use the original BERT weights only on the encoder or the decoder and fixed random weights on the other part. Interestingly, when the adapters were injected only to the decoder, with the encoder pre-trained or random, the performance dropped to zero. In other words, a fitting encoder is critical.
 
-We further studied the behaviour of adapters when we tried to down-scale the pre-trained model size. In our experiments, we found that a model with just half of the weights, such as our \texttt{zsbert}, can closely match the performance of the baseline model, the model that uses BERT in both of the encoder and the decoder and only fine-tuning the cross-attention and output layers. Finally, we also observe that we can increase further the effectiveness of adapters in \texttt{zsbert} by only incorporating adapters on the encoder side.
+We further studied the behaviour of adapters when we tried to down-scale the pre-trained model size. In our experiments, we found that a model with just half of the weights, such as our \texttt{zsbert}, can closely match the performance of the baseline model, the model that uses BERT in both the encoder and the decoder and only fine-tuning the cross-attention and output layers. Finally, we also observe that we can increase further the effectiveness of adapters in \texttt{zsbert} by only incorporating adapters on the encoder side.
 
 We see two practical applications from our findings:
 \begin{itemize}
-    \item Initializing just the encoder with the pre-trained weights such as BERT (with a fixed random decoder) and fine-tuning with adapters could be helpful when targeting low-resource languages. The random decoder is created trivially and no large target side monolingual corpus is needed.
+    \item Initializing just the encoder with the pre-trained weights such as BERT (with a fixed random decoder) and fine-tuning with adapters could be helpful when targeting low-resource languages. The random decoder is created trivially, and no large target side monolingual corpus is needed.
     \item Reducing the pre-trained BERT to half its size and fine-tuning with adapt\-ers provide useful GPU memory savings while keeping a similar performance as the baseline model.
 \end{itemize}
 

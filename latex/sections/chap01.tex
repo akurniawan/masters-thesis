@@ -37,7 +37,7 @@ Despite its shortcomings, NMT is clearly and by far the current best approach. A
 
 \section{Neural Machine Translation}
 \label{sec:bm_nmt}
-We define the translation problem used in this work as a mapping function $t$ from a given source language $S$ and target language $T$ from parallel corpus, that is $t : S \rightarrow T$. A parallel corpus is a set of sentence pairs in two different languages where one sentence in $T$ corresponds to its equivalent in language $S$. The goal of function $t$ is to find the highest probability of sentence $y \in T$ from $x \in S$, where $t(x) = argmax_y(p(y|x))$. The probability $p(y|x)$ is the probability estimation given by the NMT model.
+We define the translation problem used in this work as a mapping function $t$ from a given source language $S$ and target language $T$ from parallel corpus, that is, $t : S \rightarrow T$. A parallel corpus is a set of sentence pairs in two different languages where one sentence in $T$ corresponds to its equivalent in language $S$. The goal of function $t$ is to find the highest probability of sentence $y \in T$ from $x \in S$, where $t(x) = argmax_y(p(y|x))$. The probability $p(y|x)$ is the probability estimation given by the NMT model.
 
 The following sections show a quick overview of recent NMT models. They include architecture, advantages, and drawbacks.
 
