@@ -15,7 +15,7 @@ Prior to NMT, a variant of SMT, namely phrase-based machine translation (PBMT), 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/bleusentencelength.png}}
     \centering
-    \caption{Performance of SMT vs NMT on various sentence lengths from \normcite{koehn2017six}.}
+    \caption{Performance of SMT vs NMT on various sentence lengths from \normcite{koehn2017six}. \hl{BLEU is a common metric used in MT to measure translation quality. A higher score represents a better translation.}}
     \label{img:bleusentlength}
 \end{figure}
 
@@ -165,9 +165,9 @@ An adapter is a lightweight layer inserted between the layers of a pre-trained t
 
 Following \normcite{pfeiffer2020madx}, adapter is defined with the following formulation
 
-$$A_l(h_l, r_l) = U_l(ReLU(D_l(LA_l))) + r_l $$
+$$A_l(h_l, r_l) = U_l(ReLU(D_l(h_l))) + r_l $$
 
-$A_l$ is the adapter incorporated at layer $l$, $D_l$ is a down projection layer $D \in R^{h \times d}$ where $h$ is the dimension of the current layer and $d$ is the adapter dimension, $U_l$ is an up projection layer $U \in R^{d \times h}$, and $r_l$ is the residual connection from the previous layer, both $h$ and $l$ are larger than $d$. We can refer to \cref{img:adapters} for an illustration of the adapter bottleneck layer and how they are incorporated to the Transformer architecture.
+$A_l$ is the adapter incorporated at layer $l$, $D_l$ is a down projection layer $D \in R^{h \times d}$ where $h$ is the dimension of the current layer and $d$ is the adapter dimension, $U_l$ is an up projection layer $U \in R^{d \times h}$, $h_l$ is the transformer hidden state, and $r_l$ is the residual connection from the previous layer, both $h$ and $l$ are larger than $d$. We can refer to \cref{img:adapters} for an illustration of the adapter bottleneck layer and how they are incorporated to the Transformer architecture.
 
 \begin{figure}[h]
     {\includegraphics[width=0.75\textwidth]{img/adapter_module.png}}

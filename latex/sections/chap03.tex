@@ -6,7 +6,7 @@ In this chapter, we describe our selection of datasets, framework, and automatic
 
 \section{German-to-English Dataset}
 \label{sec:dataset}
-The scope of our experiment is in a single language pair: German$\rightarrow$English. We only select a single language pair because we want to focus our experiment on understanding the behaviour of BERT and the adapters in machine translation, not on generalization across multiple language pairs. We select IWSLT14 and WMT19 as our primary datasets. IWSLT14 will be mainly used as the dataset for fine-tuning and testing the final performance of the model, while WMT19 is used for the additional dataset in pre-training as well as in training some of our baselines.
+The scope of our experiment is in a single language pair: German$\rightarrow$English. We only select a single language pair because we want to focus our experiment on understanding the behaviour of BERT and the adapters in machine translation, not on generalization across multiple language pairs. We select IWSLT14 and WMT19 as our primary datasets. IWSLT14 will be mainly used as the dataset for fine-tuning and testing the final performance of the model, while WMT19 is used for the additional dataset in pre-training as well as in training some of our baselines. \hl{We focus on  IWSLT14 mainly because it has a considerably low number of sentence pairs and a relatively targeted domain. This is relevant as we would also like to understand how the models behave under a limited number of training data. On the other hand, WMT19 contains broader topics and may provide better coverage for the model during the pre-training.}
 
 \subsection{IWSLT 2014}
 The 2014 IWSLT evaluation \citewithpar{Cettolo2014ReportOT} is the fourth instance of a shared task started in 2010. This task is mainly focusing on the translation of TED Talks. The task is based on a collection of public speeches that cover various topics. All the talks in the collections have English captions. These captions are then translated into many languages by various volunteers worldwide. As TED talks are recorded events of speakers sharing their thoughts and experience, we need to deal with spoken language rather than written language. Spoken language is expected to be less complex and formal than written language.
@@ -106,10 +106,10 @@ BLEU works by measuring the percentage of the matching n-grams in the hypothesis
 The above example will lead to 100\% unigram precision of the hypothesis despite the result only sharing the word \textbf{you}. To mitigate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
 
 \begin{equation}
-    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{n\in C}Count_{clip}(n)}{\sum_{C'\in\{Candidates\}}\sum_{n'\in C'}Count(n')}
+    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{x\in C}Count_{clip}(x)}{\sum_{C'\in\{Candidates\}}\sum_{x'\in C'}Count(x')}
 \end{equation}
 
-Where $n$ is the set of possible n-grams from a particular sentence used when calculating the score.
+Where $x$ is the set of possible n-grams from a particular sentence used when calculating the score.
 
 We mentioned that besides n-grams, BLEU also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
 
