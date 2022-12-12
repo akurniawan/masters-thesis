@@ -148,7 +148,7 @@ We can see in \cref{img:baseline_zbert} that we are losing performance of about 
     \label{img:adapter_zbert_ratio}
 \end{figure}
 
-From \cref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially, we can see some improvement in the BLEU score compared to the higher ratio. However, they eventually converge to a similar performance by the end of training with no significant difference between different ratios. From this result, we can understand that depending on the base pre-trained model, adapters still have a limitation in achieving certain performance.
+From \cref{img:adapter_zbert_ratio}, when we increase the size of the reduction ratio, initially, we can see some improvement in BLEU compared to the higher ratio. However, they eventually converge to a similar performance by the end of training with no significant difference between different ratios. This shows that depending on the pre-trained model, adapters still have a limitation in achieving certain performance.
 
 \paragraph{Adapters Position}
 In this section, we aim to understand whether the position of both adapters and the pre-trained models affect the model's performance, similar to what we have seen in \cref{sec:posada}. We use a similar setup as in the previous section, with the exception that we use \texttt{zbert} as the pre-trained model instead of the original BERT model.

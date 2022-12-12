@@ -15,7 +15,7 @@ Prior to NMT, a variant of SMT, namely phrase-based machine translation (PBMT), 
 \begin{figure}[h]
     {\includegraphics[width=0.95\textwidth]{img/bleusentencelength.png}}
     \centering
-    \caption{Performance of SMT vs NMT on various sentence lengths from \normcite{koehn2017six}. \hl{BLEU is a common metric used in MT to measure translation quality. A higher score represents a better translation.}}
+    \caption{Performance of SMT vs NMT on various sentence lengths from \normcite{koehn2017six}. \hl{BLEU is a common metric used in MT to measure translation quality. A higher score represents a better translation. For further details on BLEU, we can refer to }\cref{sec:aeval}}
     \label{img:bleusentlength}
 \end{figure}
 
@@ -193,3 +193,64 @@ There are several problems in fine-tuning that adapters are trying to solve:
     \caption{Illustration of adapters instability. ``W'' represents the models that use adapters and ``WO'' represents the models that do not use adapters. Figure reprinted from \cite{han2021robust}.}
     \label{img:adapters_instability}
 \end{figure}
+
+\clearpage
+\section{Automatic Evaluation (BLEU)}
+\label{sec:aeval}
+Bilingual Evaluation Understudy or \texttt{BLEU} \citewithpar{BLEU} is one of the evaluation metrics that is widely used to evaluate MT models. It works by evaluating the output of an MT system (the hypothesis) with a set of manually translated references.
+
+BLEU works by measuring the percentage of the matching n-grams in the hypothesis and taking the difference in length of the hypothesis and references as a form of penalty. The percentage of n-grams is often interpreted as a measurement of precision. However, in some cases, simply calculating the matching n-grams may lead to a misinterpretation of the output. In the case of unigram ($n=1$), we can see the matching n-grams as the number of tokens available in the hypothesis and the references divided by the total number of tokens. See the following example:
+
+\bigskip
+
+\textbf{Hypothesis}: \underline{you} \underline{you} \underline{you} \underline{you}
+
+\textbf{Reference}: I think \underline{you} should know that \underline{you} are right
+
+\bigskip
+
+The above example will lead to 100\% unigram precision of the hypothesis despite the result only sharing the word \textbf{you}. To mitigate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
+
+\begin{equation}
+    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{x\in C}Count_{clip}(x)}{\sum_{C'\in\{Candidates\}}\sum_{x'\in C'}Count(x')}
+\end{equation}
+
+Where $x$ is the set of possible n-grams from a particular sentence used when calculating the score.
+
+We mentioned that besides n-grams, BLEU also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
+
+\bigskip
+
+\textbf{Hypothesis}: you
+
+\textbf{Reference}: I think \underline{you} should know that \underline{you} are right
+
+\bigskip
+
+Despite having a 100\% precision score, the hypothesis does not represent the correct translation compared to the reference. We want to elude such a problem by introducing a penalty called \textbf{brevity penalty}. The penalty works by measuring the length of the hypothesis relative to the reference length and  $e^{(1-r/c)}$ when the candidate is shorter than the reference length. To be more specific, we refer to the equation below.
+
+\begin{equation}
+    BP=\begin{cases} 1 & \mbox{if } c>r \\ e^{(1-r/c)} & \mbox{if } c\le r \end{cases}
+\end{equation}
+
+In the case of more than one reference, $r$ is the length of the reference with the closest length to the hypothesis, called the \textbf{effective reference length}. One must note that the choice of reference will vary between different implementations of BLEU. To be more precise, take the following example that shows the difference between two references is equal to 1, where one reference is one word shorter than the hypothesis and the other is one word longer:
+
+\bigskip
+
+\textbf{Candidate}: I eat fish on the beach with
+
+\textbf{Reference} 1: I eat fish on the beach with friends
+
+\textbf{Reference} 2: I eat fish on the beach
+
+\bigskip
+
+Combining the above components, BLEU is defined as follows:
+
+\begin{equation}
+    BLEU=BP\cdot exp\left( \sum_{n=1}^{N} w_n \log p_n \right)
+\end{equation}
+
+We define $w_n$ as the weights for each n-grams scores ($p_n$) where $\sum^{\infty}_{i=1} w_i = 1$. $w_n$ is usually set uniformly across all $n$ depending on the number of n-grams used in the calculation. When 4-grams is used, it is set to $\frac{1}{4}$. By default, BLEU computes the n-gram precision from unigrams to 4-grams. We perform the final score computation by calculating the average for each n-gram score and multiplying them by the brevity penalty (BP).
+
+In this work, we follow the implementation of sacrebleu\footnote{\url{https://github.com/mjpost/sacreBLEU}} \citewithpar{post-2018-call} that is wrapped under Huggingface Transformers framework.

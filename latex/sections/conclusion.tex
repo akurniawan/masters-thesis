@@ -12,7 +12,7 @@ We further studied the behaviour of adapters when we tried to down-scale the pre
 
 We see two practical applications from our findings:
 \begin{itemize}
-    \item Initializing just the encoder with the pre-trained weights such as BERT (with a fixed random decoder) and fine-tuning with adapters could be helpful when targeting low-resource languages. The random decoder is created trivially, and no large target side monolingual corpus is needed. \hl{The result can be seen from} \cref{img:adapt_bert_randdec}.
+    \item Initializing just the encoder with the pre-trained weights such as BERT (with a fixed random decoder) and fine-tuning with adapters could be helpful when targeting low-resource languages. \hl{We recall from} \cref{img:adapt_bert_randdec} \hl{that we achieve similar performance to the baseline model, where we use pre-trained model for both languages. This shows that pre-trained model in the decoder might be considered optional when it is unavailable, and one can continue to fine-tune the model with adapters.}
     \item Reducing the pre-trained BERT to half its size and fine-tuning with adapt\-ers provide useful GPU memory savings while keeping a similar performance as the baseline model. \hl{We recall from} \cref{tab:numvars} \hl{that the total number of weights required to train the variants of reduced-BERT (\texttt{zsbert}) is half of the size of the original BERT model. For this reason, we deduce that the total required GPU to train the model is relatively less than the original BERT model.}
 \end{itemize}
 

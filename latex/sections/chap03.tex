@@ -1,6 +1,6 @@
 % Target 5 pages
 
-\chapter{Experiment Setup}
+\chapter{Dataset and Model Training Framework}
 \label{chap:03}
 In this chapter, we describe our selection of datasets, framework, and automatic evaluation we used for the experiments. We start by describing our set of training and test data, our reasoning for choosing the dataset, and the tokenization algorithm in \cref{sec:dataset}. We then move forward to the framework we use to implement the neural network, training, and evaluation phase in \cref{sec:framework}. Finally, we discuss the automatic evaluation we use during the experiments in  \cref{sec:aeval}.
 
@@ -89,64 +89,64 @@ The fact that the library is continuously maintained by the Huggingface team and
 \subsection{AdapterHub}
 Another reason we choose Huggingface is the availability of AdapterHub \citewithpar{pfeiffer-etal-2020-adapterhub}. Despite adapter's simplicity and achieving strong results in multi-task and cross-lingual transfer learning \citewithpar{pfeiffer2021adapterfusion,pfeiffer2020madx}, reusing and sharing adapters was not straightforward. Adapters are rarely released independently due to their subtle differences in architecture and strong dependence on the base model, task, and language. AdapterHub was created to facilitate the easiness of training models with adapters and share the fine-tuned adapters in various settings to mitigate these issues.
 
-\section{Automatic Evaluation}
-\label{sec:aeval}
-Bilingual Evaluation Understudy or \texttt{BLEU} \citewithpar{BLEU} is one of the evaluation metrics that is widely used to evaluate MT models. It works by evaluating the output of an MT system (the hypothesis) with a set of manually translated references.
+% \section{Automatic Evaluation}
+% \label{sec:aeval}
+% Bilingual Evaluation Understudy or \texttt{BLEU} \citewithpar{BLEU} is one of the evaluation metrics that is widely used to evaluate MT models. It works by evaluating the output of an MT system (the hypothesis) with a set of manually translated references.
 
-BLEU works by measuring the percentage of the matching n-grams in the hypothesis and taking the difference in length of the hypothesis and references as a form of penalty. The percentage of n-grams is often interpreted as a measurement of precision. However, in some cases, simply calculating the matching n-grams may lead to a misinterpretation of the output. In the case of unigram ($n=1$), we can see the matching n-grams as the number of tokens available in the hypothesis and the references divided by the total number of tokens. See the following example:
+% BLEU works by measuring the percentage of the matching n-grams in the hypothesis and taking the difference in length of the hypothesis and references as a form of penalty. The percentage of n-grams is often interpreted as a measurement of precision. However, in some cases, simply calculating the matching n-grams may lead to a misinterpretation of the output. In the case of unigram ($n=1$), we can see the matching n-grams as the number of tokens available in the hypothesis and the references divided by the total number of tokens. See the following example:
 
-\bigskip
+% \bigskip
 
-\textbf{Hypothesis}: \underline{you} \underline{you} \underline{you} \underline{you}
+% \textbf{Hypothesis}: \underline{you} \underline{you} \underline{you} \underline{you}
 
-\textbf{Reference}: I think \underline{you} should know that \underline{you} are right
+% \textbf{Reference}: I think \underline{you} should know that \underline{you} are right
 
-\bigskip
+% \bigskip
 
-The above example will lead to 100\% unigram precision of the hypothesis despite the result only sharing the word \textbf{you}. To mitigate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
+% The above example will lead to 100\% unigram precision of the hypothesis despite the result only sharing the word \textbf{you}. To mitigate the precision problem, the shared number of n-grams in the hypothesis and the reference must be clipped by the number of n-grams in the reference. The following is the updated BLEU formula after incorporating the n-gram clipping:
 
-\begin{equation}
-    p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{x\in C}Count_{clip}(x)}{\sum_{C'\in\{Candidates\}}\sum_{x'\in C'}Count(x')}
-\end{equation}
+% \begin{equation}
+%     p_n=\frac{\sum_{C\in\{Candidates\}}\sum_{x\in C}Count_{clip}(x)}{\sum_{C'\in\{Candidates\}}\sum_{x'\in C'}Count(x')}
+% \end{equation}
 
-Where $x$ is the set of possible n-grams from a particular sentence used when calculating the score.
+% Where $x$ is the set of possible n-grams from a particular sentence used when calculating the score.
 
-We mentioned that besides n-grams, BLEU also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
+% We mentioned that besides n-grams, BLEU also considers the length of the hypothesis as a penalty score. This is useful when dealing with short candidates within the hypothesis. The following is the example that shows the problematic output:
 
-\bigskip
+% \bigskip
 
-\textbf{Hypothesis}: you
+% \textbf{Hypothesis}: you
 
-\textbf{Reference}: I think \underline{you} should know that \underline{you} are right
+% \textbf{Reference}: I think \underline{you} should know that \underline{you} are right
 
-\bigskip
+% \bigskip
 
-Despite having a 100\% precision score, the hypothesis does not represent the correct translation compared to the reference. We want to elude such a problem by introducing a penalty called \textbf{brevity penalty}. The penalty works by measuring the length of the hypothesis relative to the reference length and  $e^{(1-r/c)}$ when the candidate is shorter than the reference length. To be more specific, we refer to the equation below.
+% Despite having a 100\% precision score, the hypothesis does not represent the correct translation compared to the reference. We want to elude such a problem by introducing a penalty called \textbf{brevity penalty}. The penalty works by measuring the length of the hypothesis relative to the reference length and  $e^{(1-r/c)}$ when the candidate is shorter than the reference length. To be more specific, we refer to the equation below.
 
-\begin{equation}
-    BP=\begin{cases} 1 & \mbox{if } c>r \\ e^{(1-r/c)} & \mbox{if } c\le r \end{cases}
-\end{equation}
+% \begin{equation}
+%     BP=\begin{cases} 1 & \mbox{if } c>r \\ e^{(1-r/c)} & \mbox{if } c\le r \end{cases}
+% \end{equation}
 
-In the case of more than one reference, $r$ is the length of the reference with the closest length to the hypothesis, called the \textbf{effective reference length}. One must note that the choice of reference will vary between different implementations of BLEU. To be more precise, take the following example that shows the difference between two references is equal to 1, where one reference is one word shorter than the hypothesis and the other is one word longer:
+% In the case of more than one reference, $r$ is the length of the reference with the closest length to the hypothesis, called the \textbf{effective reference length}. One must note that the choice of reference will vary between different implementations of BLEU. To be more precise, take the following example that shows the difference between two references is equal to 1, where one reference is one word shorter than the hypothesis and the other is one word longer:
 
-\bigskip
+% \bigskip
 
-\textbf{Candidate}: I eat fish on the beach with
+% \textbf{Candidate}: I eat fish on the beach with
 
-\textbf{Reference} 1: I eat fish on the beach with friends
+% \textbf{Reference} 1: I eat fish on the beach with friends
 
-\textbf{Reference} 2: I eat fish on the beach
+% \textbf{Reference} 2: I eat fish on the beach
 
-\bigskip
+% \bigskip
 
-Combining the above components, BLEU is defined as follows:
+% Combining the above components, BLEU is defined as follows:
 
-\begin{equation}
-    BLEU=BP\cdot exp\left( \sum_{n=1}^{N} w_n \log p_n \right)
-\end{equation}
+% \begin{equation}
+%     BLEU=BP\cdot exp\left( \sum_{n=1}^{N} w_n \log p_n \right)
+% \end{equation}
 
-We define $w_n$ as the weights for each n-grams scores ($p_n$) where $\sum^{\infty}_{i=1} w_i = 1$. $w_n$ is usually set uniformly across all $n$ depending on the number of n-grams used in the calculation. When 4-grams is used, it is set to $\frac{1}{4}$.
+% We define $w_n$ as the weights for each n-grams scores ($p_n$) where $\sum^{\infty}_{i=1} w_i = 1$. $w_n$ is usually set uniformly across all $n$ depending on the number of n-grams used in the calculation. When 4-grams is used, it is set to $\frac{1}{4}$.
 
-By default, BLEU computes the n-gram precision from unigrams to 4-grams. We perform the final score computation by calculating the average for each n-gram score and multiplying them by the brevity penalty (BP).
+% By default, BLEU computes the n-gram precision from unigrams to 4-grams. We perform the final score computation by calculating the average for each n-gram score and multiplying them by the brevity penalty (BP).
 
-In this work, we follow the implementation of sacrebleu\footnote{\url{https://github.com/mjpost/sacreBLEU}} \citewithpar{post-2018-call} that is wrapped under Huggingface Transformers framework.
+% In this work, we follow the implementation of sacrebleu\footnote{\url{https://github.com/mjpost/sacreBLEU}} \citewithpar{post-2018-call} that is wrapped under Huggingface Transformers framework.
