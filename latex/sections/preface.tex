@@ -1,6 +1,8 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
-Pre-trained language models \citewithpar{devlin2018bert,howard2018universal} have received considerable attention in recent years. These models are trained on large-scale corpora and then fine-tuned for a particular downstream task. This method allows pre-trained models to perform well across various natural language processing tasks. One of the most successful models is BERT \citewithpar{devlin2018bert}. BERT has been most extensively used for common natural language understanding (NLU) tasks. It has been shown that BERT can achieve great performance with relatively straightforward fine-tuning, especially for \hl{classification-like tasks} \citewithpar{devlin2018bert,wang2018glue,Rajpurkar2016SQuAD1Q}.
+Pre-trained language models \citewithpar{devlin2018bert,howard2018universal} have received considerable attention in recent years. These models are trained on large-scale corpora and then fine-tuned for a particular downstream task. This method allows pre-trained models to perform well across various natural language processing tasks. One of the most successful models is BERT \citewithpar{devlin2018bert}. BERT has been most extensively used for common natural language understanding (NLU) tasks. It has been shown that BERT can achieve great performance with relatively straightforward fine-tuning, especially for classification-like tasks \citewithpar{devlin2018bert,wang2018glue,Rajpurkar2016SQuAD1Q}.
+% \hl{classification-like tasks}
+
 
 For natural language generation (NLG), incorporating BERT is still challenging. According to \normcite{zhu2020incorporating}, simply incorporating BERT into the encoder side of the seq2seq architecture can hurt the performance. On the decoder side, BERT does not quite fit either because the bidirectional nature of the model was significantly different from the objective of the conditional language model (predicting the next word).
 
